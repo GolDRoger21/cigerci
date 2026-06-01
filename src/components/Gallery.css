@@ -1,0 +1,321 @@
+.gallery-section {
+  position: relative;
+  background-color: #0b0908;
+  border-top: 1px solid rgba(212, 175, 55, 0.05);
+}
+
+/* Masonry Grid Layout */
+.gallery-masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 220px;
+  gap: 1.5rem;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+}
+
+.gallery-item:hover {
+  transform: scale(1.02);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.gallery-img-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover .gallery-img {
+  transform: scale(1.1);
+}
+
+/* Spans for Mosaic Effect */
+.item-0 {
+  grid-column: span 3;
+  grid-row: span 2;
+}
+
+.item-1 {
+  grid-column: span 3;
+  grid-row: span 1;
+}
+
+.item-2 {
+  grid-column: span 3;
+  grid-row: span 1;
+}
+
+.item-3 {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.item-4 {
+  grid-column: span 4;
+  grid-row: span 1;
+}
+
+/* Item Hover Overlay */
+.gallery-item-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(9, 8, 7, 0.9) 100%
+  );
+  opacity: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  transition: var(--transition);
+}
+
+.gallery-item:hover .gallery-item-overlay {
+  opacity: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 8, 7, 0.4) 0%,
+    rgba(9, 8, 7, 0.9) 100%
+  );
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.overlay-content {
+  transform: translateY(20px);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover .overlay-content {
+  transform: translateY(0);
+}
+
+.gallery-item-decor {
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+}
+
+.overlay-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.overlay-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(9, 8, 7, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  z-index: 2001;
+}
+
+.lightbox-close-btn:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  color: var(--color-primary);
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  z-index: 2001;
+}
+
+.lightbox-nav-btn:hover {
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.prev-btn {
+  left: 2rem;
+}
+
+.next-btn {
+  right: 2rem;
+}
+
+.lightbox-content-box {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2000;
+}
+
+.lightbox-main-img {
+  max-height: 65vh;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 1.5rem;
+}
+
+.lightbox-text-pane {
+  padding: 1.5rem 2.5rem;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  border-color: var(--color-border);
+}
+
+.lightbox-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.lightbox-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.lightbox-counter {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.animate-zoom {
+  animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .gallery-masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 180px;
+  }
+  
+  .item-0 { grid-column: span 4; grid-row: span 2; }
+  .item-1 { grid-column: span 2; grid-row: span 1; }
+  .item-2 { grid-column: span 2; grid-row: span 1; }
+  .item-3 { grid-column: span 2; grid-row: span 1; }
+  .item-4 { grid-column: span 2; grid-row: span 1; }
+  
+  .lightbox-nav-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+  }
+  
+  .prev-btn { left: 1rem; }
+  .next-btn { right: 1rem; }
+}
+
+@media (max-width: 576px) {
+  .gallery-masonry-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 240px;
+    gap: 1rem;
+  }
+  
+  .gallery-item {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+  
+  .lightbox-modal {
+    padding: 1rem;
+  }
+  
+  .lightbox-close-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .lightbox-nav-btn {
+    display: none; /* Hide nav arrows on mobile, simplify interaction */
+  }
+  
+  .lightbox-text-pane {
+    padding: 1rem;
+  }
+  
+  .lightbox-title {
+    font-size: 1.25rem;
+  }
+}
