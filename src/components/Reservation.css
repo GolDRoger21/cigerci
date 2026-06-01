@@ -29,7 +29,7 @@
 }
 
 .reservation-info-pane {
-  background: linear-gradient(135deg, #1f1a16 0%, #151310 100%);
+  background: linear-gradient(135deg, #2b1b14 0%, #121110 100%);
   padding: 3rem;
   display: flex;
   flex-direction: column;
@@ -66,8 +66,8 @@
 .detail-icon {
   font-size: 1.25rem;
   color: var(--color-primary);
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: rgba(211, 117, 70, 0.08);
+  border: 1px solid rgba(211, 117, 70, 0.2);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -75,6 +75,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(211, 117, 70, 0.15);
 }
 
 .pane-detail-item h4 {
@@ -99,7 +100,9 @@
 /* Form */
 .reservation-form {
   padding: 3rem;
-  background: rgba(21, 19, 16, 0.4);
+  background: rgba(23, 21, 19, 0.8);
+  border-left: 1px solid rgba(211, 117, 70, 0.1);
+  box-shadow: inset 0 0 30px rgba(211, 117, 70, 0.02);
 }
 
 .form-pane-title {
@@ -127,32 +130,33 @@
 
 .form-group label {
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
+  font-weight: 600;
+  color: var(--color-primary-light);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background: rgba(9, 8, 7, 0.6);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: rgba(11, 10, 9, 0.75);
+  border: 1px solid rgba(211, 117, 70, 0.25);
   color: var(--color-text);
-  padding: 0.85rem 1.1rem;
+  padding: 0.95rem 1.25rem;
   font-family: var(--font-body);
   font-size: 0.95rem;
-  border-radius: 6px;
+  border-radius: 8px;
   outline: none;
   transition: var(--transition);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
-  background: rgba(21, 19, 16, 0.8);
+  box-shadow: 0 0 15px rgba(211, 117, 70, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  background: rgba(11, 10, 9, 0.95);
 }
 
 .form-group select option {
@@ -201,14 +205,14 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(211, 117, 70, 0.1);
   border: 2px solid var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 2rem auto;
   font-size: 2.5rem;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 20px rgba(211, 117, 70, 0.25);
 }
 
 .success-title {

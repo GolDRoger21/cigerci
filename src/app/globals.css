@@ -1,27 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Elegant Obsidian & Gold Design System */
-  --color-bg: #090807;
-  --color-surface: #151310;
-  --color-surface-hover: #1e1b17;
-  --color-surface-rgb: 21, 19, 16;
-  --color-primary: #d4af37;        /* Pure Gold */
-  --color-primary-light: #e5c158;
-  --color-primary-rgb: 212, 175, 55;
-  --color-accent: #b22222;         /* Fire Red / Köz Kızılı */
-  --color-accent-rgb: 178, 34, 34;
-  --color-text: #f5f2eb;           /* Cream White */
-  --color-text-muted: #9e9589;     /* Antique Silver */
-  --color-border: rgba(212, 175, 55, 0.15);
-  --color-border-hover: rgba(212, 175, 55, 0.35);
+  /* Kadim Diyarbakır Bazaltı & Otantik Bakır Tasarım Sistemi */
+  --color-bg: #0b0a09;             /* Derin Mistik Bazalt Siyahı */
+  --color-surface: #171513;        /* Bazalt Taşı Grisi */
+  --color-surface-hover: #23201c;
+  --color-surface-rgb: 23, 21, 19;
+  
+  --color-primary: #d37546;        /* Otantik El Yapımı Bakır */
+  --color-primary-light: #e28a5b;  /* Parlak Yeni Bakır */
+  --color-primary-dark: #a55227;   /* Eskitilmiş Koyu Bakır */
+  --color-primary-rgb: 211, 117, 70;
+  
+  --color-accent: #c02c1b;         /* Köz Kızılı / İsot Kırmızısı */
+  --color-accent-rgb: 192, 44, 27;
+  
+  --color-text: #f6f3ed;           /* Krem Beyazı */
+  --color-text-muted: #aba296;     /* Eskitilmiş Metal Gümüşü */
+  --color-border: rgba(211, 117, 70, 0.18);
+  --color-border-hover: rgba(211, 117, 70, 0.38);
   
   --font-display: 'Cinzel', serif;
   --font-body: 'Outfit', sans-serif;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.05);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 20px rgba(211, 117, 70, 0.08);
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --border-radius: 12px;
 }
@@ -89,21 +93,21 @@ a {
 /* Utility Classes */
 .gold-text {
   color: var(--color-primary);
-  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa7c11 100%);
+  background: linear-gradient(135deg, #f5bfa2 0%, #d37546 50%, #903c15 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .glow-text {
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  text-shadow: 0 0 10px rgba(211, 117, 70, 0.3);
 }
 
 .gold-gradient-bg {
-  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  background: linear-gradient(135deg, #d37546 0%, #a55227 100%);
 }
 
 .accent-gradient-bg {
-  background: linear-gradient(135deg, #b22222 0%, #7a1111 100%);
+  background: linear-gradient(135deg, #c02c1b 0%, #7e160b 100%);
 }
 
 .section-container {
@@ -194,15 +198,15 @@ a {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
-  color: #000;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
   border: none;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 4px 15px rgba(211, 117, 70, 0.2);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #e5c158 0%, #d4af37 100%);
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  box-shadow: 0 8px 25px rgba(211, 117, 70, 0.4);
   transform: translateY(-2px);
 }
 
@@ -213,21 +217,21 @@ a {
 }
 
 .btn-secondary:hover {
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(211, 117, 70, 0.08);
   border-color: var(--color-primary-light);
   transform: translateY(-2px);
 }
 
 .btn-accent {
-  background: linear-gradient(135deg, #b22222 0%, #7a1111 100%);
+  background: linear-gradient(135deg, #c02c1b 0%, #7e160b 100%);
   color: var(--color-text);
   border: none;
-  box-shadow: 0 4px 15px rgba(178, 34, 34, 0.2);
+  box-shadow: 0 4px 15px rgba(192, 44, 27, 0.2);
 }
 
 .btn-accent:hover {
-  background: linear-gradient(135deg, #c93b2b 0%, #b22222 100%);
-  box-shadow: 0 8px 25px rgba(178, 34, 34, 0.4);
+  background: linear-gradient(135deg, #e03b26 0%, #c02c1b 100%);
+  box-shadow: 0 8px 25px rgba(192, 44, 27, 0.4);
   transform: translateY(-2px);
 }
 

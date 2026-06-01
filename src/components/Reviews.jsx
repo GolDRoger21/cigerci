@@ -21,13 +21,15 @@ export default function Reviews() {
     try {
       const q = query(
         collection(db, "reviews"),
-        where("isApproved", "==", true),
         orderBy("date", "desc")
       );
       const querySnapshot = await getDocs(q);
       const items = [];
       querySnapshot.forEach((doc) => {
-        items.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        if (data.isApproved === true) {
+          items.push({ id: doc.id, ...data });
+        }
       });
       setReviews(items);
       setLoading(false);
