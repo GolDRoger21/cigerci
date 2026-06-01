@@ -45,7 +45,8 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-container">
         <a href="#" className="navbar-logo" onClick={(e) => handleLinkClick(e, "hero")}>
-          <span className="logo-icon">❖</span> CİĞERCİ <span className="gold-text">NEŞET</span>
+          <img src="/resimler/neset_logo.png" alt="Ciğerci Neşet Logo" className="navbar-logo-img" />
+          CİĞERCİ <span className="gold-text">NEŞET</span>
         </a>
 
         {/* Desktop Menu */}

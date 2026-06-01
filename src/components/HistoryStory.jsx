@@ -60,7 +60,7 @@ export default function HistoryStory() {
             <div className="image-frame-wrapper">
               <div className="image-frame-border-gold"></div>
               <img 
-                src="/resimler/Gemini_Generated_Image_9s8ok99s8ok99s8o.png" 
+                src="/resimler/ciger_plating.png" 
                 alt="Diyarbakır Tarihi Ocakbaşı Hazırlığı" 
                 className="history-image" 
               />
@@ -72,7 +72,7 @@ export default function HistoryStory() {
             {/* Embedded small secondary image */}
             <div className="secondary-image-wrapper">
               <img 
-                src="/resimler/Gemini_Generated_Image_zdwcezdwcezdwcez.png" 
+                src="/resimler/hero_ocakbasi.png" 
                 alt="Ciğerin Közle Buluşma Anı" 
                 className="secondary-history-image" 
               />
@@ -86,7 +86,7 @@ export default function HistoryStory() {
       {/* Decorative Parallax Striplet */}
       <div className="history-parallax-divider">
         <div className="parallax-bg-wrapper">
-          <img src="/resimler/Gemini_Generated_Image_6715f16715f16715.png" alt="Otantik Baharatlar" className="parallax-bg-img" />
+          <img src="/resimler/charcoal_ember.png" alt="Otantik Baharatlar" className="parallax-bg-img" />
           <div className="parallax-overlay"></div>
         </div>
         <div className="parallax-content text-center">

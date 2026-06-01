@@ -37,10 +37,20 @@
   color: var(--color-text);
 }
 
-.logo-icon {
-  color: var(--color-primary);
-  font-size: 1.2rem;
+.navbar-logo-img {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
   filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+  background: var(--color-surface);
+  transition: var(--transition);
+}
+
+.navbar-logo:hover .navbar-logo-img {
+  transform: rotate(360deg);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
 
 .navbar-links {

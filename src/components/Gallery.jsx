@@ -7,29 +7,29 @@ export default function Gallery() {
 
   const images = [
     {
-      src: "/resimler/Gemini_Generated_Image_4bnjhd4bnjhd4bnj.png",
+      src: "/resimler/ciger_plating.png",
       title: "Tescilli Diyarbakır Ciğeri",
       desc: "Zırh kıyması, sumaklı soğan ve sıcacık lavaş eşliğinde bakır tepside."
     },
     {
-      src: "/resimler/Gemini_Generated_Image_6715f16715f16715.png",
+      src: "/resimler/charcoal_ember.png",
       title: "Otantik Baharat Köşesi",
       desc: "Hakiki sumak, pul biber ve közün harı ile lezzetlenen sırlar."
     },
     {
-      src: "/resimler/Gemini_Generated_Image_9s8ok99s8ok99s8o.png",
+      src: "/resimler/hero_ocakbasi.png",
       title: "Neşet Usta'nın Tarihi Ocağı",
       desc: "Meşe kömürü közünde, asırlık usullerle pişen kuzu ciğer şişleri."
     },
     {
-      src: "/resimler/Gemini_Generated_Image_pmvftppmvftppmvf.png",
+      src: "/resimler/sur_historic.png",
       title: "Mistik Ocakbaşı Ambiansı",
       desc: "Bakır davlumbazlar ve eskitilmiş taş duvarlar arasında otantik bir gece."
     },
     {
-      src: "/resimler/Gemini_Generated_Image_zdwcezdwcezdwcez.png",
-      title: "Dumanı Üstünde Köz Keyfi",
-      desc: "Ateşin kızıllığında kıvılcımlanan, lokum kıvamında pişen lezzet."
+      src: "/resimler/neset_logo.png",
+      title: "Ciğerci Neşet Logosu",
+      desc: "Tarihi lezzetin ve otantik Sur ocakbaşının simgesi tescilli logo."
     }
   ];
 

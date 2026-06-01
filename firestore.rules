@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Menu rules: Anyone can read, only admin can write
+    match /menu/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Reviews rules: Anyone can read, anyone can create, only admin can delete/update
+    match /reviews/{document} {
+      allow read: if true;
+      allow create: if request.resource.data.userName != null 
+                    && request.resource.data.comment != null;
+      allow update, delete: if false;
+    }
+    
+    // Reservations rules: Anyone can create, only admin can read/write/delete
+    match /reservations/{document} {
+      allow create: if request.resource.data.customerName != null 
+                    && request.resource.data.customerPhone != null;
+      allow read, update, delete: if false;
+    }
+    
+    // Messages rules: Anyone can create a contact message, only admin can read/write/delete
+    match /messages/{document} {
+      allow create: if request.resource.data.name != null 
+                    && request.resource.data.email != null 
+                    && request.resource.data.message != null;
+      allow read, update, delete: if false;
+    }
+  }
+}

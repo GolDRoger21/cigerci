@@ -30,7 +30,7 @@ export default function Hero() {
           loop 
           muted 
           playsInline 
-          poster="/resimler/Gemini_Generated_Image_4bnjhd4bnjhd4bnj.png"
+          poster="/resimler/hero_ocakbasi.png"
         >
           <source src="/Bu lezzeti herkesin tatmasını isteriz.mp4" type="video/mp4" />
           Tarayıcınız video etiketini desteklemiyor.
