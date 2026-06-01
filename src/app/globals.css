@@ -43,6 +43,13 @@ html {
 
 body {
   background-color: var(--color-bg);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(11, 10, 9, 0.97) 0%,
+    rgba(11, 10, 9, 0.99) 100%
+  ), url('/resimler/sur_basalt_texture.png');
+  background-size: 320px auto;
+  background-repeat: repeat;
   color: var(--color-text);
   font-family: var(--font-body);
   line-height: 1.6;
