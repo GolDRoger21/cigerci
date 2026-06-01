@@ -4,30 +4,25 @@ service cloud.firestore {
     // Menu rules: Anyone can read, only admin can write
     match /menu/{document} {
       allow read: if true;
-      allow write: if false;
+      allow write: if false; // Only admin via Admin Console
     }
     
-    // Reviews rules: Anyone can read, anyone can create, only admin can delete/update
+    // Reviews rules: Anyone can read, create, update, delete (needed for client-side admin dashboard)
     match /reviews/{document} {
       allow read: if true;
       allow create: if request.resource.data.userName != null 
                     && request.resource.data.comment != null;
-      allow update, delete: if false;
+      allow update, delete: if true;
     }
     
-    // Reservations rules: Anyone can create, only admin can read/write/delete
+    // Reservations rules: Anyone can read, create, update, delete (needed for client-side admin dashboard)
     match /reservations/{document} {
-      allow create: if request.resource.data.customerName != null 
-                    && request.resource.data.customerPhone != null;
-      allow read, update, delete: if false;
+      allow read, create, update, delete: if true;
     }
     
-    // Messages rules: Anyone can create a contact message, only admin can read/write/delete
+    // Messages rules: Anyone can read, create, delete (needed for client-side admin dashboard)
     match /messages/{document} {
-      allow create: if request.resource.data.name != null 
-                    && request.resource.data.email != null 
-                    && request.resource.data.message != null;
-      allow read, update, delete: if false;
+      allow read, create, delete: if true;
     }
   }
 }

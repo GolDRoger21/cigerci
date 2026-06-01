@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import "./Reservation.css";
@@ -17,6 +17,16 @@ export default function Reservation() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [todayDate, setTodayDate] = useState("");
+
+  useEffect(() => {
+    // Formats date to YYYY-MM-DD in local time
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    setTodayDate(`${yyyy}-${mm}-${dd}`);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -205,6 +215,7 @@ export default function Reservation() {
                       name="date"
                       value={formData.date}
                       onChange={handleChange}
+                      min={todayDate}
                       required
                     />
                   </div>

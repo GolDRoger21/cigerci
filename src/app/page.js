@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import HistoryStory from "../components/HistoryStory";
 import Menu from "../components/Menu";
 import Gallery from "../components/Gallery";
+import Reservation from "../components/Reservation";
 import Reviews from "../components/Reviews";
 import Contact from "../components/Contact";
 
@@ -26,6 +27,9 @@ export default function Home() {
 
         {/* Mosaic Masonry Gallery with custom Lightbox */}
         <Gallery />
+
+        {/* Table Booking System */}
+        <Reservation />
 
         {/* Real-time Reviews and new review submissions */}
         <Reviews />
