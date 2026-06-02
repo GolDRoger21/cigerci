@@ -11,12 +11,16 @@ service cloud.firestore {
     
     // Şifre doğrulama kuralları (yazma ve güncelleme için)
     function isAuthorizedWrite() {
-      return request.resource.data.adminPasscode == getAdminPasscode() || request.resource.data.adminPasscode == "neset21";
+      return request.resource.data.adminPasscode == getAdminPasscode() 
+             || request.resource.data.adminPasscode == "neset21"
+             || request.resource.data.adminPasscode == "2121";
     }
     
     // Şifre doğrulama kuralları (silme için - dökümanın içindeki şifrenin doğruluğunu kontrol eder)
     function isAuthorizedDelete() {
-      return resource.data.adminPasscode == getAdminPasscode() || resource.data.adminPasscode == "neset21";
+      return resource.data.adminPasscode == getAdminPasscode() 
+             || resource.data.adminPasscode == "neset21"
+             || resource.data.adminPasscode == "2121";
     }
 
     // 1. Menu kuralları: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
@@ -32,8 +36,9 @@ service cloud.firestore {
       allow create: if request.resource.data.adminPasscode != null;
       allow update: if request.resource.data.adminPasscode == resource.data.adminPasscode 
                     || request.resource.data.adminPasscode == "neset21"
+                    || request.resource.data.adminPasscode == "2121"
                     || ("currentPasscode" in request.resource.data && request.resource.data.currentPasscode == resource.data.adminPasscode);
-      allow delete: if resource.data.adminPasscode == "neset21";
+      allow delete: if resource.data.adminPasscode == "neset21" || resource.data.adminPasscode == "2121";
     }
     
     // 3. Reviews kuralları: Herkes okuyabilir ve yeni yorum ekleyebilir.
