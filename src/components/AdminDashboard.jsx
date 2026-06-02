@@ -36,7 +36,7 @@ export default function AdminDashboard() {
     slogan: "Diyarbakır'ın Kadim Tarihinden, Ocakbaşı Sıcaklığıyla Sofranıza...",
     announcementActive: true,
     announcementText: "",
-    heroVideoId: "Hzq_6lFJZUI",
+    heroVideoUrl: "https://cdn.jsdelivr.net/gh/GolDRoger21/cigerci@main/public/Bu%20lezzeti%20herkesin%20tatmas%C4%B1n%C4%B1%20isteriz.mp4",
     phone: "",
     email: "",
     address: "",
@@ -1219,15 +1219,15 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Anasayfa Canlı Arka Plan Video Kodu (YouTube ID)</label>
+                    <label>Anasayfa Canlı Arka Plan Video Linki (MP4 veya YouTube)</label>
                     <input 
                       type="text" 
-                      placeholder="Örnek: Hzq_6lFJZUI"
-                      value={settingsForm.heroVideoId || ""}
-                      onChange={(e) => setSettingsForm({...settingsForm, heroVideoId: e.target.value})}
+                      placeholder="Örnek: MP4 Linki veya YouTube Kodu/Linki"
+                      value={settingsForm.heroVideoUrl || ""}
+                      onChange={(e) => setSettingsForm({...settingsForm, heroVideoUrl: e.target.value})}
                     />
                     <small style={{ color: "rgba(255,255,255,0.45)", marginTop: "0.25rem", display: "block" }}>
-                      YouTube video linkindeki (örneğin <code>https://www.youtube.com/watch?v=Hzq_6lFJZUI</code> veya <code>https://www.youtube.com/shorts/Hzq_6lFJZUI</code>) 11 haneli benzersiz kodu girin. Sitenin kotasını korumak için doğrudan YouTube üzerinden oynatılır.
+                      Sitenin kotasını korumak için video harici CDN veya YouTube üzerinden oynatılır. Buraya doğrudan bir <code>.mp4</code> video linki girebilir (sıfır arayüz / tam akıcılık için önerilir) ya da 11 haneli YouTube video kodunu girip kaydedebilirsiniz.
                     </small>
                   </div>
                 </div>
