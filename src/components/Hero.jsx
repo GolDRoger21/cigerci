@@ -1,10 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./Hero.css";
 
 export default function Hero() {
-  const [videoOpen, setVideoOpen] = useState(false);
-
   const handleScrollTo = (e, id) => {
     e.preventDefault();
     const element = document.getElementById(id);
@@ -22,21 +20,17 @@ export default function Hero() {
     }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setVideoOpen(false);
-    };
-    if (videoOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [videoOpen]);
-
   return (
     <section id="hero" className="hero-section">
-      {/* Dynamic Ken Burns Background */}
+      {/* Autoplay & Loop YouTube Background Video */}
       <div className="video-background-container">
-        <div className="hero-bg-image"></div>
+        <iframe
+          className="video-bg-iframe"
+          src="https://www.youtube.com/embed/Hzq_6lFJZUI?autoplay=1&mute=1&loop=1&playlist=Hzq_6lFJZUI&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1"
+          frameBorder="0"
+          allow="autoplay; encrypted-media"
+          title="Ciğerci Neşet Canlı Ocakbaşı Videosu"
+        ></iframe>
         <div className="hero-overlay"></div>
       </div>
 
@@ -68,12 +62,6 @@ export default function Hero() {
           >
             Menümüzü İncele 🍽️
           </a>
-          <button 
-            className="btn btn-video btn-hero animate-pulse-glow"
-            onClick={() => setVideoOpen(true)}
-          >
-            Tanıtım Videosunu İzle 🎥
-          </button>
         </div>
       </div>
 
@@ -86,30 +74,6 @@ export default function Hero() {
       >
         <span className="scroll-arrow">↓</span>
       </a>
-
-      {/* 🎬 PREMIUM GLASSMORPHIC VIDEO MODAL OVERLAY */}
-      {videoOpen && (
-        <div className="video-modal-overlay" onClick={() => setVideoOpen(false)}>
-          <div className="video-modal-container glass-card animate-zoom" onClick={(e) => e.stopPropagation()}>
-            {/* Close Button */}
-            <button className="video-modal-close-btn" onClick={() => setVideoOpen(false)} aria-label="Kapat">
-              ✕
-            </button>
-            
-            {/* Modal Video Body (Styled for 9:16 Portrait YouTube Short) */}
-            <div className="video-modal-body">
-              <iframe
-                className="video-iframe"
-                src="https://www.youtube.com/embed/Hzq_6lFJZUI?autoplay=1&mute=0&rel=0&modestbranding=1"
-                title="Ciğerci Neşet Tanıtım Videosu"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
