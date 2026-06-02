@@ -20,33 +20,35 @@
   background: #000;
 }
 
-/* Fullscreen YouTube Background Video */
+/* 🎥 GENIUS 9:16 YOUTUBE SHORTS FULL SCREEN BACKGROUND COVER SYSTEM */
+/* We set the iframe exactly to 9:16 aspect ratio so YouTube renders no black bars inside it, */
+/* then we scale it so it covers the horizontal viewport, cropping the top/bottom while staying ultra-wide! */
 .video-bg-iframe {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100vw;
-  height: 56.25vw; /* 16:9 aspect ratio */
+  height: 177.77vw; /* 9:16 Aspect Ratio (100 * 16 / 9) */
   min-height: 100vh;
-  min-width: 177.77vh; /* 16:9 aspect ratio */
+  min-width: 56.25vh; /* 9:16 Aspect Ratio (100 * 9 / 16) */
   pointer-events: none;
   border: none;
-  opacity: 0.65; /* Subtle transparency so deep basalt backgrounds look extremely luxurious */
+  opacity: 0.65; /* Elegant transparency over basalt background */
 }
 
-/* Maintain cover layout for different viewport shapes */
-@media (max-aspect-ratio: 16/9) {
+/* Maintain cover layout for screen aspect ratio shifts */
+@media (min-aspect-ratio: 9/16) {
   .video-bg-iframe {
-    width: 177.77vh;
-    height: 100vh;
+    width: 100vw;
+    height: 177.77vw;
   }
 }
 
-@media (min-aspect-ratio: 16/9) {
+@media (max-aspect-ratio: 9/16) {
   .video-bg-iframe {
-    width: 100vw;
-    height: 56.25vw;
+    width: 56.25vh;
+    height: 100vh;
   }
 }
 
