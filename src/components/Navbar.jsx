@@ -45,6 +45,18 @@ export default function Navbar() {
   const handleLinkClick = (e, id) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    
+    // Tarayıcı ortamında olup olmadığımızı ve anasayfada olup olmadığımızı doğrula
+    const isHomePage = typeof window !== "undefined" && (window.location.pathname === "/" || window.location.pathname === "");
+    
+    if (!isHomePage) {
+      // Eğer yasal bir alt sayfadaysak, doğrudan anasayfa hash'ine yönlendir
+      if (typeof window !== "undefined") {
+        window.location.href = `/#${id}`;
+      }
+      return;
+    }
+
     const element = document.getElementById(id);
     if (element) {
       const offset = settings?.announcementActive ? 116 : 80; // Navbar height + announcement offset
@@ -59,6 +71,7 @@ export default function Navbar() {
       });
     }
   };
+
 
   const renderLogoText = () => {
     if (settings?.restaurantName) {

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function TermsOfUsePage() {
   const [docData, setDocData] = useState({
@@ -78,19 +79,17 @@ Sitede yer alan tüm logolar, grafikler, iştah açıcı görseller ve metinler 
               </div>
             )}
 
-            <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <a href="/" style={{ color: "var(--color-primary)", textDecoration: "none", fontSize: "0.9rem", fontWeight: "600" }}>← Sitede Gezinmeye Dön</a>
-              <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.8rem" }}>Son Güncelleme: 2026</span>
+            <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+              <a href="/" className="btn btn-primary" style={{ textDecoration: "none", fontSize: "0.9rem" }}>
+                ← Anasayfaya Geri Dön
+              </a>
+              <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.85rem" }}>Son Güncelleme: {new Date().getFullYear()}</span>
             </div>
           </div>
         </div>
       </main>
 
-      <footer className="footer-pane">
-        <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "2rem 0", textAlign: "center" }}>
-          <p>© {new Date().getFullYear()} Ciğerci Neşet. Tüm Hakları Saklıdır.</p>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

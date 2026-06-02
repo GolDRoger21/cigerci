@@ -9,6 +9,7 @@ import Gallery from "../components/Gallery";
 import Reservation from "../components/Reservation";
 import Reviews from "../components/Reviews";
 import Contact from "../components/Contact";
+import Footer from "../components/Footer";
 
 export default async function Home() {
   let settings = {
@@ -78,47 +79,8 @@ export default async function Home() {
         <Contact />
       </main>
 
-      {/* Visually Rich Footer */}
-      <footer className="footer-pane">
-        <div className="footer-container">
-          <div className="footer-brand">
-            <span className="footer-logo">❖</span>
-            <h3>{renderFooterLogoText()}</h3>
-            <p>{settings.slogan}</p>
-          </div>
-          
-          <div className="footer-links-col">
-            <h4>Hızlı Linkler</h4>
-            <ul>
-              <li><a href="#hero">Anasayfa</a></li>
-              <li><a href="#history">Tarihimiz</a></li>
-              <li><a href="#menu">Menü</a></li>
-              <li><a href="#reservation">Rezervasyon</a></li>
-              <li><a href="#reviews">Yorumlar</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-info-col">
-            <h4>Çalışma Saatleri</h4>
-            <p>{settings.workingHours}</p>
-            {settings.mottoHighlight && (
-              <p className="footer-motto-highlight gold-text">{settings.mottoHighlight}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <div className="footer-legal-links" style={{ marginBottom: "1rem", display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap" }}>
-            <a href="/gizlilik-politikasi" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>Gizlilik Politikası</a>
-            <span style={{ color: "rgba(255,255,255,0.1)", fontSize: "0.8rem" }}>|</span>
-            <a href="/kullanim-kosullari" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>Kullanım Koşulları</a>
-            <span style={{ color: "rgba(255,255,255,0.1)", fontSize: "0.8rem" }}>|</span>
-            <a href="/kvkk" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>KVKK Aydınlatma Metni</a>
-          </div>
-          <p>© {new Date().getFullYear()} {settings.restaurantName}. Tüm Hakları Saklıdır.</p>
-          <span className="footer-designer-sign">Tasarım & Altyapı: Next.js + Google Firebase</span>
-        </div>
-      </footer>
+      {/* Dynamic Footer with Premium Modals */}
+      <Footer />
     </>
   );
 }
