@@ -105,7 +105,7 @@ export default function Navbar() {
       <nav className={`navbar ${scrolled ? "scrolled" : ""} ${settings?.announcementActive ? "has-announcement" : ""}`}>
         <div className="navbar-container">
           <a href="#" className="navbar-logo" onClick={(e) => handleLinkClick(e, "hero")}>
-            <img src="/resimler/neset_logo.png" alt="Logo" className="navbar-logo-img" />
+            <img src="/resimler/neset_logo.png" alt={`${settings?.restaurantName || "Ciğerci Neşet"} logo`} className="navbar-logo-img" />
             {renderLogoText()}
           </a>
 

@@ -96,10 +96,11 @@ export default function Menu() {
                 {/* Yemek Görseli */}
                 {item.imageUrl && (
                   <div className="menu-card-image-wrapper">
-                    <img 
-                      src={item.imageUrl} 
-                      alt={item.name} 
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
                       className="menu-card-image"
+                      loading="lazy"
                       onError={(e) => {
                         e.target.src = "/resimler/sur_basalt_texture.png";
                       }}

@@ -12,13 +12,30 @@ import {
   getDoc, 
   setDoc 
 } from "firebase/firestore";
-import { db } from "../firebase/config";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { db, auth } from "../firebase/config";
 import { getDirectImageUrl } from "../firebase/imageHelper";
 import "./AdminDashboard.css";
 
+// Human-readable labels for menu category slugs (shared by the menu grid & filters)
+const MENU_CATEGORY_LABELS = {
+  cigerler: "CİĞERLER",
+  kebaplar: "KEBAPLAR",
+  mezeler: "MEZELER & İKRAMLAR",
+  tatlilar: "TATLILAR",
+  icecekler: "İÇECEKLER",
+};
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passcode, setPasscode] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [activeTab, setActiveTab] = useState("reservations");
   const [loading, setLoading] = useState(true);
@@ -49,8 +66,7 @@ export default function AdminDashboard() {
     tripadvisorUrl: "",
     reservationsEnabled: true,
     reservationsDisabledMessage: "",
-    maxGuestsPerSlot: 10,
-    adminPasscode: "neset21"
+    maxGuestsPerSlot: 10
   });
 
   // Filter & Search states
@@ -81,12 +97,7 @@ export default function AdminDashboard() {
   // Settings change form state
   const [settingsForm, setSettingsForm] = useState({ ...siteSettings });
   
-  // Password change state
-  const [passwordForm, setPasswordForm] = useState({
-    currentPass: "",
-    newPass: "",
-    confirmPass: ""
-  });
+  // Account security feedback (Firebase Auth password reset)
   const [passwordMessage, setPasswordMessage] = useState({ text: "", type: "" });
 
   // Yasal Metinler state'leri
@@ -135,7 +146,6 @@ export default function AdminDashboard() {
         title: legalForm.title,
         content: legalForm.content,
         updatedAt: new Date().toISOString(),
-        adminPasscode: passcode // Credentials for firestore.rules
       });
       alert(`${legalForm.title} başarıyla güncellendi ve sitede yayına alındı! 📜`);
     } catch (err) {
@@ -145,90 +155,53 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
-  // On initial mount, check if passcode is saved in localStorage
+  // Firebase Auth gates the admin panel. Session persistence is handled by the
+  // Firebase SDK, so onAuthStateChanged restores the session on reload.
   useEffect(() => {
-    const savedPass = localStorage.getItem("cigerci_admin_passcode");
-    if (savedPass) {
-      // Auto-authenticate with saved passcode
-      verifyPasscodeOnMount(savedPass);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const verifyPasscodeOnMount = async (savedPass) => {
-    try {
-      const docRef = doc(db, "settings", "site_config");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const dbPass = docSnap.data().adminPasscode || "neset21";
-        if (savedPass === dbPass) {
-          setPasscode(savedPass);
-          setIsAuthenticated(true);
-          setSiteSettings(docSnap.data());
-          setSettingsForm(docSnap.data());
-          fetchData();
-        } else {
-          localStorage.removeItem("cigerci_admin_passcode");
-          setLoading(false);
-        }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+        setAdminEmail(user.email || "");
+        fetchData();
       } else {
-        // No settings document, use default
-        if (savedPass === "neset21" || savedPass === "2121") {
-          setPasscode(savedPass);
-          setIsAuthenticated(true);
-          fetchData();
-        } else {
-          localStorage.removeItem("cigerci_admin_passcode");
-          setLoading(false);
-        }
+        setIsAuthenticated(false);
+        setAdminEmail("");
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Auto login error:", err);
-      setLoading(false);
-    }
-  };
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setActionLoading(true);
     setPassError("");
     try {
-      const docRef = doc(db, "settings", "site_config");
-      const docSnap = await getDoc(docRef);
-      let correctPass = "neset21";
-      
-      if (docSnap.exists()) {
-        correctPass = docSnap.data().adminPasscode || "neset21";
-        setSiteSettings(docSnap.data());
-        setSettingsForm(docSnap.data());
-      }
-      
-      if (passcode === correctPass || passcode === "neset21" || passcode === "2121") {
-        localStorage.setItem("cigerci_admin_passcode", passcode);
-        setIsAuthenticated(true);
-        fetchData();
-      } else {
-        setPassError("Hatalı yönetici şifresi! Tekrar deneyin.");
-      }
+      await signInWithEmailAndPassword(auth, loginEmail.trim(), loginPassword);
+      // onAuthStateChanged takes over from here (sets auth state + loads data).
+      setLoginPassword("");
     } catch (err) {
-      console.error("Login verification failed:", err);
-      // Fallback local check
-      if (passcode === "neset21" || passcode === "2121") {
-        localStorage.setItem("cigerci_admin_passcode", passcode);
-        setIsAuthenticated(true);
-        fetchData();
+      console.error("Giriş başarısız:", err);
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        setPassError("Hatalı e-posta veya şifre! Tekrar deneyin.");
+      } else if (err.code === "auth/too-many-requests") {
+        setPassError("Çok fazla başarısız deneme. Lütfen biraz sonra tekrar deneyin.");
+      } else if (err.code === "auth/invalid-email") {
+        setPassError("Geçersiz e-posta adresi.");
       } else {
-        setPassError("Bağlantı hatası ve hatalı şifre!");
+        setPassError("Giriş yapılamadı. Bağlantınızı kontrol edin.");
       }
     }
     setActionLoading(false);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("cigerci_admin_passcode");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Çıkış hatası:", err);
+    }
     setIsAuthenticated(false);
-    setPasscode("");
   };
 
   const fetchData = async () => {
@@ -285,13 +258,12 @@ export default function AdminDashboard() {
     }
   };
 
-  // 1. RESERVATIONS - Update Status with passcode auth
+  // 1. RESERVATIONS - Update Status (writes gated by Firebase Auth in firestore.rules)
   const handleUpdateResStatus = async (id, newStatus) => {
     setActionLoading(true);
     try {
       const docRef = doc(db, "reservations", id);
-      // Merging passcode in data so Firestore security rules accept the write!
-      await updateDoc(docRef, { status: newStatus, adminPasscode: passcode });
+      await updateDoc(docRef, { status: newStatus });
       
       setReservations(prev => 
         prev.map(res => res.id === id ? { ...res, status: newStatus } : res)
@@ -303,12 +275,12 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
-  // 2. REVIEWS - Approve status change with passcode auth
+  // 2. REVIEWS - Approve status change (writes gated by Firebase Auth)
   const handleToggleReviewApproval = async (id, currentApproved) => {
     setActionLoading(true);
     try {
       const docRef = doc(db, "reviews", id);
-      await updateDoc(docRef, { isApproved: !currentApproved, adminPasscode: passcode });
+      await updateDoc(docRef, { isApproved: !currentApproved });
       
       setReviews(prev => 
         prev.map(rev => rev.id === id ? { ...rev, isApproved: !currentApproved } : rev)
@@ -320,17 +292,12 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
-  // 3. GENERIC DELETE - Secure deletes by updating document first to set passcode
+  // 3. GENERIC DELETE - deletes are gated by Firebase Auth in firestore.rules
   const handleDeleteItem = async (colName, id) => {
     if (!window.confirm("Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?")) return;
     setActionLoading(true);
     try {
       const docRef = doc(db, colName, id);
-      // 1. Update the document first to add adminPasscode!
-      // This satisfies the isAuthorizedDelete rules (resource.data.adminPasscode == getAdminPasscode())
-      await updateDoc(docRef, { adminPasscode: passcode });
-      
-      // 2. Perform actual deletion
       await deleteDoc(docRef);
       
       // Update local state
@@ -394,7 +361,6 @@ export default function AdminDashboard() {
         isAvailable: menuForm.isAvailable,
         order: parseInt(menuForm.order),
         imageUrl: parsedImageUrl,
-        adminPasscode: passcode // Auth credential for Firestore rules
       };
 
       if (editingMenuItem) {
@@ -431,7 +397,7 @@ export default function AdminDashboard() {
     setActionLoading(true);
     try {
       const docRef = doc(db, "menu", item.id);
-      await updateDoc(docRef, { isAvailable: !item.isAvailable, adminPasscode: passcode });
+      await updateDoc(docRef, { isAvailable: !item.isAvailable });
       setMenuItems(prev => 
         prev.map(m => m.id === item.id ? { ...m, isAvailable: !item.isAvailable } : m)
       );
@@ -448,10 +414,9 @@ export default function AdminDashboard() {
     setActionLoading(true);
     try {
       const docRef = doc(db, "settings", "site_config");
-      const updatedConfig = {
-        ...settingsForm,
-        adminPasscode: passcode // Kept as current passcode
-      };
+      // Strip any legacy passcode fields so the public settings doc never stores them.
+      const { adminPasscode, currentPasscode, ...cleanSettings } = settingsForm;
+      const updatedConfig = { ...cleanSettings };
       await setDoc(docRef, updatedConfig);
       setSiteSettings(updatedConfig);
       alert("Site ayarları başarıyla kaydedildi! Sitedeki tüm alanlar güncellendi. 🔥");
@@ -462,44 +427,27 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
-  // 6. SECURITY - Update admin passcode
-  const handlePasswordChange = async (e) => {
+  // 6. SECURITY - Send a Firebase password reset email to the logged-in admin.
+  // (Admin credentials now live in Firebase Authentication, not in Firestore.)
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
     setPasswordMessage({ text: "", type: "" });
-    
-    if (passwordForm.newPass !== passwordForm.confirmPass) {
-      setPasswordMessage({ text: "Yeni şifreler eşleşmiyor!", type: "error" });
-      return;
-    }
-    
-    if (passwordForm.currentPass !== passcode) {
-      setPasswordMessage({ text: "Mevcut şifreniz hatalı!", type: "error" });
+
+    if (!adminEmail) {
+      setPasswordMessage({ text: "Oturum e-postası bulunamadı. Lütfen yeniden giriş yapın.", type: "error" });
       return;
     }
 
     setActionLoading(true);
     try {
-      const docRef = doc(db, "settings", "site_config");
-      const updatedConfig = {
-        ...siteSettings,
-        adminPasscode: passwordForm.newPass,
-        currentPasscode: passcode // Send this to authorize passcode change in rules!
-      };
-      
-      // Save it (authorized by current passcode)
-      await setDoc(docRef, updatedConfig);
-      
-      // Update local credentials
-      setPasscode(passwordForm.newPass);
-      setSiteSettings(updatedConfig);
-      setSettingsForm(updatedConfig);
-      localStorage.setItem("cigerci_admin_passcode", passwordForm.newPass);
-      
-      setPasswordForm({ currentPass: "", newPass: "", confirmPass: "" });
-      setPasswordMessage({ text: "Yönetici giriş şifreniz başarıyla güncellendi! Artık yeni şifreniz geçerlidir.", type: "success" });
+      await sendPasswordResetEmail(auth, adminEmail);
+      setPasswordMessage({
+        text: `Şifre sıfırlama bağlantısı ${adminEmail} adresine gönderildi. Lütfen e-posta kutunuzu kontrol edin.`,
+        type: "success",
+      });
     } catch (err) {
-      console.error("Şifre güncellenemedi:", err);
-      setPasswordMessage({ text: "Veritabanı bağlantı hatası veya yetkisiz işlem!", type: "error" });
+      console.error("Şifre sıfırlama e-postası gönderilemedi:", err);
+      setPasswordMessage({ text: "E-posta gönderilemedi. Bağlantınızı kontrol edin.", type: "error" });
     }
     setActionLoading(false);
   };
@@ -564,15 +512,28 @@ export default function AdminDashboard() {
 
           <form onSubmit={handleLogin} className="login-form">
             <div className="form-group">
-              <label htmlFor="passcode">Yönetici Şifresi (Passcode) *</label>
+              <label htmlFor="loginEmail">Yönetici E-posta *</label>
               <input
-                type="password"
-                id="passcode"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                placeholder="Giriş anahtarını yazın..."
+                type="email"
+                id="loginEmail"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="ornek@cigercineset.com"
+                autoComplete="username"
                 required
                 autoFocus
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="loginPassword">Şifre *</label>
+              <input
+                type="password"
+                id="loginPassword"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="Şifrenizi yazın..."
+                autoComplete="current-password"
+                required
               />
             </div>
             <button type="submit" className="btn btn-primary btn-login-submit" disabled={actionLoading}>
@@ -988,11 +949,9 @@ export default function AdminDashboard() {
                   onChange={(e) => setFilterMenuCategory(e.target.value)}
                 >
                   <option value="all">Tüm Kategoriler</option>
-                  <option value="cigerler">CİĞERLER</option>
-                  <option value="kebaplar">KEBAPLAR</option>
-                  <option value="mezeler">MEZELER & İKRAMLAR</option>
-                  <option value="tatlilar">TATLILAR</option>
-                  <option value="icecekler">İÇECEKLER</option>
+                  {Object.entries(MENU_CATEGORY_LABELS).map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
                 </select>
                 <button className="btn btn-primary" onClick={() => openMenuModal(null)}>
                   ➕ Yeni Lezzet Ekle
@@ -1003,53 +962,50 @@ export default function AdminDashboard() {
             {filteredMenu.length === 0 ? (
               <p className="no-data-hint">Menüde aranan kriterlerde lezzet bulunamadı.</p>
             ) : (
-              <div className="menu-items-admin-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem", marginTop: "2rem" }}>
+              <div className="menu-items-admin-grid">
                 {filteredMenu.map((item) => (
-                  <div key={item.id} className={`menu-card glass-card ${!item.isAvailable ? "menu-item-soldout" : ""}`} style={{ position: "relative", padding: "1.5rem" }}>
-                    
+                  <div key={item.id} className={`admin-menu-card ${!item.isAvailable ? "menu-item-soldout" : ""}`}>
+
                     {/* Item Image */}
                     {item.imageUrl && (
-                      <div className="admin-menu-card-img-wrapper" style={{ height: "140px", borderRadius: "6px", overflow: "hidden", marginBottom: "1rem" }}>
-                        <img 
-                          src={item.imageUrl} 
-                          alt={item.name} 
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      <div className="admin-menu-card-img-wrapper">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
                           onError={(e) => {
                             e.target.src = "/resimler/sur_basalt_texture.png";
                           }}
                         />
                       </div>
                     )}
-                    
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                      <h4 style={{ margin: 0, fontSize: "1.15rem", fontFamily: "var(--font-display)" }}>{item.name}</h4>
-                      <span className="gold-text" style={{ fontWeight: "700" }}>{item.price > 0 ? `${item.price} ₺` : "İkram"}</span>
+
+                    <div className="admin-menu-card-head">
+                      <h4 className="admin-menu-card-name">{item.name}</h4>
+                      <span className="gold-text admin-menu-card-price">{item.price > 0 ? `${item.price} ₺` : "İkram"}</span>
                     </div>
-                    
-                    <span className="category-badge" style={{ display: "inline-block", background: "rgba(212, 175, 55, 0.1)", border: "1px solid rgba(212,175,55,0.2)", color: "var(--color-primary)", padding: "0.2rem 0.5rem", borderRadius: "4px", fontSize: "0.75rem", textTransform: "uppercase", marginBottom: "0.75rem" }}>
-                      {item.category}
-                    </span>
 
-                    {item.tag && (
-                      <span style={{ display: "inline-block", background: "rgba(178,34,34,0.15)", border: "1px solid rgba(178,34,34,0.3)", color: "#ff8888", padding: "0.2rem 0.5rem", borderRadius: "4px", fontSize: "0.75rem", marginLeft: "0.5rem", marginBottom: "0.75rem" }}>
-                        {item.tag}
+                    <div className="admin-menu-card-badges">
+                      <span className="admin-badge admin-badge-category">
+                        {MENU_CATEGORY_LABELS[item.category] || item.category}
                       </span>
-                    )}
+                      {item.tag && (
+                        <span className="admin-badge admin-badge-tag">{item.tag}</span>
+                      )}
+                    </div>
 
-                    <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", lineLength: "3", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", height: "54px", marginBottom: "1rem" }}>{item.description}</p>
-                    
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "1rem" }}>
-                      <button 
+                    <p className="admin-menu-card-desc">{item.description}</p>
+
+                    <div className="admin-menu-card-footer">
+                      <button
                         className={`action-btn ${item.isAvailable ? "btn-table-approve" : "btn-table-reject"}`}
                         onClick={() => handleToggleMenuAvailability(item)}
-                        style={{ fontSize: "0.75rem" }}
                       >
                         {item.isAvailable ? "Satışta ✔" : "Tükendi ❌"}
                       </button>
 
-                      <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button className="action-btn btn-table-complete" onClick={() => openMenuModal(item)} style={{ fontSize: "0.75rem" }}>Düzenle</button>
-                        <button className="action-btn btn-table-delete" onClick={() => handleDeleteItem("menu", item.id)} style={{ fontSize: "0.75rem" }}>Sil</button>
+                      <div className="admin-menu-card-actions">
+                        <button className="action-btn btn-table-complete" onClick={() => openMenuModal(item)}>Düzenle</button>
+                        <button className="action-btn btn-table-delete" onClick={() => handleDeleteItem("menu", item.id)}>Sil</button>
                       </div>
                     </div>
                   </div>
@@ -1084,11 +1040,9 @@ export default function AdminDashboard() {
                           value={menuForm.category}
                           onChange={(e) => setMenuForm({...menuForm, category: e.target.value})}
                         >
-                          <option value="cigerler">CİĞERLER</option>
-                          <option value="kebaplar">KEBAPLAR</option>
-                          <option value="mezeler">MEZELER & İKRAMLAR</option>
-                          <option value="tatlilar">TATLILAR</option>
-                          <option value="icecekler">İÇECEKLER</option>
+                          {Object.entries(MENU_CATEGORY_LABELS).map(([value, label]) => (
+                            <option key={value} value={value}>{label}</option>
+                          ))}
                         </select>
                       </div>
 
@@ -1380,62 +1334,38 @@ export default function AdminDashboard() {
                 </button>
               </form>
 
-              {/* Right Side - Passcode Security change */}
+              {/* Right Side - Account security (Firebase Auth) */}
               <div className="settings-sidebar-widgets">
                 <div className="settings-card card-danger">
-                  <h4 className="settings-card-title text-danger">🔒 Giriş Şifresini Değiştir</h4>
-                  
+                  <h4 className="settings-card-title text-danger">🔒 Hesap Güvenliği</h4>
+
+                  {adminEmail && (
+                    <p className="help-text" style={{ marginBottom: "1rem" }}>
+                      Giriş yapılan hesap: <strong>{adminEmail}</strong>
+                    </p>
+                  )}
+
                   {passwordMessage.text && (
                     <div className={`password-alert-box ${passwordMessage.type}`}>
                       {passwordMessage.text}
                     </div>
                   )}
 
-                  <form onSubmit={handlePasswordChange} className="admin-settings-form">
-                    <div className="form-group">
-                      <label>Mevcut Şifre *</label>
-                      <input 
-                        type="password" 
-                        required
-                        value={passwordForm.currentPass}
-                        onChange={(e) => setPasswordForm({...passwordForm, currentPass: e.target.value})}
-                        placeholder="Mevcut şifrenizi girin..."
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Yeni Şifre (Passcode) *</label>
-                      <input 
-                        type="password" 
-                        required
-                        value={passwordForm.newPass}
-                        onChange={(e) => setPasswordForm({...passwordForm, newPass: e.target.value})}
-                        placeholder="En az 4 basamaklı yeni şifre..."
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Yeni Şifre Tekrar *</label>
-                      <input 
-                        type="password" 
-                        required
-                        value={passwordForm.confirmPass}
-                        onChange={(e) => setPasswordForm({...passwordForm, confirmPass: e.target.value})}
-                        placeholder="Yeni şifreyi tekrar girin..."
-                      />
-                    </div>
-
-                    <button type="submit" className="btn btn-accent btn-card-save-accent">
-                      Şifreyi Güncelle 🔑
+                  <form onSubmit={handlePasswordReset} className="admin-settings-form">
+                    <p className="help-text" style={{ marginBottom: "1rem" }}>
+                      Şifrenizi değiştirmek için hesabınıza bir sıfırlama bağlantısı e-postası gönderebilirsiniz.
+                    </p>
+                    <button type="submit" className="btn btn-accent btn-card-save-accent" disabled={actionLoading}>
+                      {actionLoading ? "Gönderiliyor..." : "Şifre Sıfırlama E-postası Gönder 🔑"}
                     </button>
                   </form>
                 </div>
-                
+
                 {/* Security advisory */}
                 <div className="settings-card">
                   <h5 className="settings-card-title text-gold">🛡️ Güvenlik Tavsiyesi</h5>
                   <p className="help-text">
-                    Yönetici şifreniz doğrudan Google Cloud sunucularında AES tabanlı protokollerle korunmaktadır. Yetkisiz girişleri önlemek için şifrenizi Diyarbakır dışı ağlarda başkalarıyla paylaşmayınız.
+                    Yönetici girişiniz Firebase Authentication ile korunmaktadır; şifreniz Google Cloud üzerinde güvenle saklanır ve sitenin kaynak kodunda yer almaz. Hesap bilgilerinizi kimseyle paylaşmayınız.
                   </p>
                 </div>
               </div>
