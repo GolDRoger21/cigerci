@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbF9oLqQrvg6FKdNQWjKhYlG07Ayf5YBU",
@@ -13,6 +13,17 @@ const firebaseConfig = {
 
 // SSR-safe Firebase initialization
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
+
+// SSR-safe & Multi-tab Offline Persistent Cache Config for Firestore
+let db;
+if (typeof window !== "undefined") {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager()
+    })
+  });
+} else {
+  db = getFirestore(app);
+}
 
 export { app, db };

@@ -81,11 +81,11 @@ export default function Navbar() {
         const mainParts = parts.join(" ");
         return (
           <>
-            {mainParts.toUpperCase()} <span className="gold-text">{lastWord.toUpperCase()}</span>
+            {mainParts.toLocaleUpperCase("tr-TR")} <span className="gold-text">{lastWord.toLocaleUpperCase("tr-TR")}</span>
           </>
         );
       }
-      return <span className="gold-text">{settings.restaurantName.toUpperCase()}</span>;
+      return <span className="gold-text">{settings.restaurantName.toLocaleUpperCase("tr-TR")}</span>;
     }
     return (
       <>
