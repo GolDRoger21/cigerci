@@ -91,13 +91,50 @@ export default function Hero() {
     if (isYouTube) return;
     const v = videoRef.current;
     if (!v) return;
+
+    // iOS/Android only autoplay when the muted *property* (not just the JSX attribute) is true.
+    // React doesn't reliably reflect the `muted` attribute onto the DOM property, which is the
+    // classic reason a fully-attributed <video> still refuses to autoplay on phones — so force it.
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.playsInline = true;
+    v.setAttribute("playsinline", "");
+
     const tryPlay = () => {
       const p = v.play();
       if (p && typeof p.catch === "function") {
-        p.catch(() => {/* autoplay blocked — poster stays visible, no blank screen */});
+        p.catch(() => {/* autoplay blocked (e.g. iOS Low Power Mode) — poster stays, no blank screen */});
       }
     };
+
     tryPlay();
+    // Retry once frames/data are available — covers slow mobile networks where the first
+    // play() call happens before the browser is ready.
+    v.addEventListener("loadeddata", tryPlay);
+    v.addEventListener("canplay", tryPlay);
+
+    // Last-resort fallback: if the OS blocked autoplay (e.g. iOS Low Power Mode / data saver),
+    // start the video on the very first user interaction with the page (a tap or scroll always
+    // happens almost immediately on mobile).
+    const playOnInteract = () => {
+      tryPlay();
+      if (!v.paused) removeInteractListeners();
+    };
+    const removeInteractListeners = () => {
+      document.removeEventListener("touchstart", playOnInteract);
+      document.removeEventListener("click", playOnInteract);
+      document.removeEventListener("scroll", playOnInteract);
+    };
+    document.addEventListener("touchstart", playOnInteract, { passive: true });
+    document.addEventListener("click", playOnInteract);
+    document.addEventListener("scroll", playOnInteract, { passive: true });
+
+    return () => {
+      v.removeEventListener("loadeddata", tryPlay);
+      v.removeEventListener("canplay", tryPlay);
+      removeInteractListeners();
+    };
   }, [heroVideoUrl, isYouTube]);
 
   // Reveal the native video only once it is actually rendering frames.
