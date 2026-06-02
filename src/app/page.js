@@ -1,4 +1,6 @@
 import React from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HistoryStory from "../components/HistoryStory";
@@ -8,7 +10,45 @@ import Reservation from "../components/Reservation";
 import Reviews from "../components/Reviews";
 import Contact from "../components/Contact";
 
-export default function Home() {
+export default async function Home() {
+  let settings = {
+    restaurantName: "Ciğerci Neşet",
+    slogan: "Diyarbakır'ın Kadim Tarihinden, Ocakbaşı Sıcaklığıyla Sofranıza...",
+    workingHours: "Haftanın Her Günü: 08:00 - Gece 02:00",
+    mottoHighlight: "Gece Ciğeri Servisimiz Mevcuttur."
+  };
+
+  try {
+    const docRef = doc(db, "settings", "site_config");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      settings = docSnap.data();
+    }
+  } catch (err) {
+    console.error("Sunucu tarafında ayarlar yüklenemedi:", err);
+  }
+
+  const renderFooterLogoText = () => {
+    if (settings.restaurantName) {
+      const parts = settings.restaurantName.split(" ");
+      if (parts.length > 1) {
+        const lastWord = parts.pop();
+        const mainParts = parts.join(" ");
+        return (
+          <>
+            {mainParts.toUpperCase()} <span className="gold-text">{lastWord.toUpperCase()}</span>
+          </>
+        );
+      }
+      return <span className="gold-text">{settings.restaurantName.toUpperCase()}</span>;
+    }
+    return (
+      <>
+        CİĞERCİ <span className="gold-text">NEŞET</span>
+      </>
+    );
+  };
+
   return (
     <>
       {/* Sticky Header Nav */}
@@ -43,8 +83,8 @@ export default function Home() {
         <div className="footer-container">
           <div className="footer-brand">
             <span className="footer-logo">❖</span>
-            <h3>CİĞERCİ <span className="gold-text">NEŞET</span></h3>
-            <p>Diyarbakır'ın Kadim Tarihinden, Ocakbaşı Sıcaklığıyla Sofranıza...</p>
+            <h3>{renderFooterLogoText()}</h3>
+            <p>{settings.slogan}</p>
           </div>
           
           <div className="footer-links-col">
@@ -60,16 +100,19 @@ export default function Home() {
 
           <div className="footer-info-col">
             <h4>Çalışma Saatleri</h4>
-            <p>Haftanın Her Günü: 08:00 - 02:00</p>
-            <p className="footer-motto-highlight gold-text">Gece Ciğeri Servisimiz Mevcuttur.</p>
+            <p>{settings.workingHours}</p>
+            {settings.mottoHighlight && (
+              <p className="footer-motto-highlight gold-text">{settings.mottoHighlight}</p>
+            )}
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© 2026 Ciğerci Neşet. Tüm Hakları Saklıdır.</p>
+          <p>© {new Date().getFullYear()} {settings.restaurantName}. Tüm Hakları Saklıdır.</p>
           <span className="footer-designer-sign">Tasarım & Altyapı: Next.js + Google Firebase</span>
         </div>
       </footer>
     </>
   );
 }
+

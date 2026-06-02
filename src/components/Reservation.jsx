@@ -1,10 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import "./Reservation.css";
 
 export default function Reservation() {
+  const [settings, setSettings] = useState({
+    restaurantName: "Ciğerci Neşet",
+    phone: "+90 (412) 222 21 21",
+    email: "info@cigercineset.com",
+    address: "Tarihi Suriçi, Gazi Caddesi No: 47, Sur / Diyarbakır",
+    workingHours: "Haftanın Her Günü: 08:00 - Gece 02:00",
+    reservationsEnabled: true,
+    reservationsDisabledMessage: "Online rezervasyonumuz geçici olarak kapalıdır.",
+    maxGuestsPerSlot: 10
+  });
+
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -26,6 +37,19 @@ export default function Reservation() {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setTodayDate(`${yyyy}-${mm}-${dd}`);
+
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, "settings", "site_config");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(prev => ({ ...prev, ...docSnap.data() }));
+        }
+      } catch (err) {
+        console.error("Rezervasyon ayarları yüklenemedi:", err);
+      }
+    };
+    fetchSettings();
   }, []);
 
   const handleChange = (e) => {
@@ -94,7 +118,22 @@ export default function Reservation() {
         </div>
 
         <div className="reservation-container">
-          {success ? (
+          {!settings.reservationsEnabled ? (
+            <div className="reservation-disabled-card glass-card text-center animate-zoom">
+              <div className="warning-icon-wrapper">
+                <span className="warning-icon">⌛</span>
+              </div>
+              <h3 className="warning-title gold-text">Masa Rezervasyonu</h3>
+              <p className="warning-text">
+                {settings.reservationsDisabledMessage}
+              </p>
+              <div className="disabled-call-wrapper" style={{ marginTop: "2rem" }}>
+                <a href={`tel:${settings.phone}`} className="btn btn-accent btn-disabled-call" style={{ textDecoration: "none", display: "inline-block" }}>
+                  Hemen Telefonla Arayın: {settings.phone} 📞
+                </a>
+              </div>
+            </div>
+          ) : success ? (
             <div className="reservation-success-card glass-card text-center animate-success">
               <div className="success-icon-wrapper">
                 <span className="success-icon">🔥</span>
@@ -111,7 +150,7 @@ export default function Reservation() {
           ) : (
             <div className="reservation-card-wrapper glass-card">
               <div className="reservation-info-pane">
-                <h3 className="pane-title">Ciğerci Neşet Lezzet Ritüeli</h3>
+                <h3 className="pane-title">{settings.restaurantName} Ritüeli</h3>
                 <p className="pane-description">
                   Diyarbakır'ın otantik lezzetini sıcacık ocakbaşı eşliğinde deneyimlemek için masanızı ayırtın.
                 </p>
@@ -120,21 +159,21 @@ export default function Reservation() {
                     <span className="detail-icon">📞</span>
                     <div>
                       <h4>Telefonla İletişim</h4>
-                      <p>+90 (412) 222 21 21</p>
+                      <p>{settings.phone}</p>
                     </div>
                   </div>
                   <div className="pane-detail-item">
                     <span className="detail-icon">🕒</span>
                     <div>
                       <h4>Çalışma Saatleri</h4>
-                      <p>Hafta İçi & Hafta Sonu: 08:00 - 02:00</p>
+                      <p>{settings.workingHours}</p>
                     </div>
                   </div>
                   <div className="pane-detail-item">
                     <span className="detail-icon">📍</span>
                     <div>
                       <h4>Adres</h4>
-                      <p>Tarihi Suriçi, Gazi Caddesi No: 47, Sur / Diyarbakır</p>
+                      <p>{settings.address}</p>
                     </div>
                   </div>
                 </div>
@@ -200,10 +239,10 @@ export default function Reservation() {
                       value={formData.guestCount}
                       onChange={handleChange}
                     >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                      {Array.from({ length: settings.maxGuestsPerSlot || 10 }, (_, i) => i + 1).map(num => (
                         <option key={num} value={num}>{num} Kişi</option>
                       ))}
-                      <option value="11">10+ Kişi (Grup)</option>
+                      <option value="50">10+ Kişi (Grup/Etkinlik)</option>
                     </select>
                   </div>
 

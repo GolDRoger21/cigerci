@@ -294,3 +294,54 @@
     font-size: 1.8rem;
   }
 }
+
+/* Rezervasyon Kapalı Kartı Stilleri */
+.reservation-disabled-card {
+  padding: 5rem 3rem;
+  max-width: 600px;
+  margin: 0 auto;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 30px rgba(178, 34, 34, 0.15);
+  background: rgba(13, 11, 9, 0.85);
+  border-radius: 12px;
+}
+
+.warning-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(178, 34, 34, 0.1);
+  border: 2px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem auto;
+  font-size: 2.5rem;
+  box-shadow: 0 0 20px rgba(178, 34, 34, 0.25);
+  animation: pulse-border 2s infinite alternate;
+}
+
+.warning-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.warning-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  margin-bottom: 2.5rem;
+}
+
+.btn-disabled-call {
+  padding: 1.1rem 2.5rem;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3);
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 10px rgba(178, 34, 34, 0.2); }
+  100% { box-shadow: 0 0 25px rgba(178, 34, 34, 0.5); }
+}
+

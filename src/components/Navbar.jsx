@@ -1,10 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +19,22 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
+    
+    // Fetch site config settings
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, "settings", "site_config");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(docSnap.data());
+        }
+      } catch (err) {
+        console.error("Ayarlar yüklenirken hata oluştu:", err);
+      }
+    };
+    
+    fetchSettings();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -28,7 +47,7 @@ export default function Navbar() {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // Navbar height offset
+      const offset = settings?.announcementActive ? 116 : 80; // Navbar height + announcement offset
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -41,16 +60,44 @@ export default function Navbar() {
     }
   };
 
-  return (
-    <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
-      <div className="navbar-container">
-        <a href="#" className="navbar-logo" onClick={(e) => handleLinkClick(e, "hero")}>
-          <img src="/resimler/neset_logo.png" alt="Ciğerci Neşet Logo" className="navbar-logo-img" />
-          CİĞERCİ <span className="gold-text">NEŞET</span>
-        </a>
+  const renderLogoText = () => {
+    if (settings?.restaurantName) {
+      const parts = settings.restaurantName.split(" ");
+      if (parts.length > 1) {
+        const lastWord = parts.pop();
+        const mainParts = parts.join(" ");
+        return (
+          <>
+            {mainParts.toUpperCase()} <span className="gold-text">{lastWord.toUpperCase()}</span>
+          </>
+        );
+      }
+      return <span className="gold-text">{settings.restaurantName.toUpperCase()}</span>;
+    }
+    return (
+      <>
+        CİĞERCİ <span className="gold-text">NEŞET</span>
+      </>
+    );
+  };
 
-        {/* Desktop Menu */}
-        <ul className="navbar-links">
+  return (
+    <>
+      {settings?.announcementActive && settings?.announcementText && (
+        <div className="announcement-bar animate-zoom">
+          <span className="announcement-text">{settings.announcementText}</span>
+        </div>
+      )}
+      
+      <nav className={`navbar ${scrolled ? "scrolled" : ""} ${settings?.announcementActive ? "has-announcement" : ""}`}>
+        <div className="navbar-container">
+          <a href="#" className="navbar-logo" onClick={(e) => handleLinkClick(e, "hero")}>
+            <img src="/resimler/neset_logo.png" alt="Logo" className="navbar-logo-img" />
+            {renderLogoText()}
+          </a>
+
+          {/* Desktop Menu */}
+          <ul className="navbar-links">
           <li><a href="#hero" onClick={(e) => handleLinkClick(e, "hero")}>Anasayfa</a></li>
           <li><a href="#history" onClick={(e) => handleLinkClick(e, "history")}>Tarihimiz</a></li>
           <li><a href="#menu" onClick={(e) => handleLinkClick(e, "menu")}>Menü</a></li>
@@ -96,5 +143,7 @@ export default function Navbar() {
         </ul>
       </div>
     </nav>
+    </>
   );
 }
+

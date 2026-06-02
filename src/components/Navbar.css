@@ -213,3 +213,47 @@
     display: flex;
   }
 }
+
+/* Announcement Bar Stilleri */
+.announcement-bar {
+  background: var(--color-primary);
+  color: #000;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  z-index: 1001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  overflow: hidden;
+}
+
+.announcement-text {
+  animation: announcement-pulse 3s infinite ease-in-out;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@keyframes announcement-pulse {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.005); text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+}
+
+.navbar.has-announcement {
+  top: 36px;
+}
+
+/* Kayan sayfalar için padding ayarı duyuru varken */
+body {
+  margin-top: 0;
+}
+

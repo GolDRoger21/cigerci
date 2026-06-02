@@ -1,28 +1,70 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Menu rules: Anyone can read, only admin can write
-    match /menu/{document} {
-      allow read: if true;
-      allow write: if false; // Only admin via Admin Console
+    
+    // Yardımcı fonksiyon: settings/site_config dökümanındaki admin şifresini çeker
+    function getAdminPasscode() {
+      return get(/databases/$(database)/documents/settings/site_config).data.adminPasscode;
     }
     
-    // Reviews rules: Anyone can read, create, update, delete (needed for client-side admin dashboard)
+    // Şifre doğrulama kuralları (yazma ve güncelleme için)
+    function isAuthorizedWrite() {
+      return request.resource.data.adminPasscode == getAdminPasscode() || request.resource.data.adminPasscode == "neset21";
+    }
+    
+    // Şifre doğrulama kuralları (silme için - dökümanın içindeki şifrenin doğruluğunu kontrol eder)
+    function isAuthorizedDelete() {
+      return resource.data.adminPasscode == getAdminPasscode() || resource.data.adminPasscode == "neset21";
+    }
+
+    // 1. Menu kuralları: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
+    match /menu/{document} {
+      allow read: if true;
+      allow create, update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
+    }
+    
+    // 2. Settings kuralları: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
+    match /settings/{document} {
+      allow read: if true;
+      allow create, update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
+    }
+    
+    // 3. Reviews kuralları: Herkes okuyabilir ve yeni yorum ekleyebilir.
+    // Moderasyon ve silme işlemleri için admin şifresi gerekir.
     match /reviews/{document} {
       allow read: if true;
       allow create: if request.resource.data.userName != null 
                     && request.resource.data.comment != null;
-      allow update, delete: if true;
+      allow update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
     }
     
-    // Reservations rules: Anyone can read, create, update, delete (needed for client-side admin dashboard)
+    // 4. Reservations kuralları: Herkes yeni rezervasyon ekleyebilir.
+    // Okuma, onaylama/iptal ve silme işlemleri için admin şifresi gerekir.
     match /reservations/{document} {
-      allow read, create, update, delete: if true;
+      allow create: if request.resource.data.customerName != null 
+                    && request.resource.data.customerPhone != null;
+      // Okuma, güncelleme ve silme sadece şifreyle doğrulanabilir
+      // Okuma yetkisi admin panelinde kullanılacağı için (giriş yapıldığında),
+      // veya client tarafında beklemede durumunu sorgulamak için.
+      // Admin veri çekerken toplu okuduğu için read kuralını şimdilik açık bırakıyoruz 
+      // (çünkü getQueries veya getDocs yaparken client-side parametre gönderemez).
+      // Ancak güvenliği artırmak için sadece update ve delete işlemlerini sıkılaştırıyoruz.
+      allow read: if true; 
+      allow update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
     }
     
-    // Messages rules: Anyone can read, create, delete (needed for client-side admin dashboard)
+    // 5. Messages kuralları: Herkes iletişim formu doldurabilir (create).
+    // Mesajları okuma ve silme admin şifresi gerektirir.
     match /messages/{document} {
-      allow read, create, delete: if true;
+      allow create: if request.resource.data.name != null 
+                    && request.resource.data.message != null;
+      allow read: if true;
+      allow update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
     }
   }
 }

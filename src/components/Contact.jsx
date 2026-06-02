@@ -1,10 +1,23 @@
 "use client";
-import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { collection, addDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import "./Contact.css";
 
 export default function Contact() {
+  const [settings, setSettings] = useState({
+    restaurantName: "Ciğerci Neşet",
+    phone: "+90 (412) 222 21 21",
+    email: "info@cigercineset.com",
+    address: "Tarihi Suriçi, Gazi Caddesi No: 47, Sur / Diyarbakır",
+    workingHours: "Her Gün: 08:00 - Gece 02:00",
+    mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=40.228%2C37.906%2C40.245%2C37.918&layer=mapnik&marker=37.912%2C40.237",
+    instagramUrl: "#",
+    facebookUrl: "#",
+    youtubeUrl: "#",
+    tripadvisorUrl: "#"
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,6 +27,21 @@ export default function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, "settings", "site_config");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(prev => ({ ...prev, ...docSnap.data() }));
+        }
+      } catch (err) {
+        console.error("İletişim ayarları yüklenemedi:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,7 +102,7 @@ export default function Contact() {
           
           {/* Details Column */}
           <div className="contact-details-column">
-            <h3 className="contact-column-title gold-text">Ciğerci Neşet</h3>
+            <h3 className="contact-column-title gold-text">{settings.restaurantName}</h3>
             <p className="contact-column-desc">
               Görüş, öneri ve toplu organizasyon talepleriniz için bizimle iletişime geçebilirsiniz. 
               Sizi ve sevdiklerinizi ağırlamaktan onur duyarız.
@@ -85,7 +113,7 @@ export default function Contact() {
                 <span className="contact-icon">📍</span>
                 <div>
                   <h4>Mekan Lokasyonu</h4>
-                  <p>Tarihi Suriçi, Gazi Caddesi No: 47, Sur / Diyarbakır</p>
+                  <p>{settings.address}</p>
                 </div>
               </div>
 
@@ -93,7 +121,7 @@ export default function Contact() {
                 <span className="contact-icon">📞</span>
                 <div>
                   <h4>Telefon Numaramız</h4>
-                  <p>+90 (412) 222 21 21</p>
+                  <p>{settings.phone}</p>
                 </div>
               </div>
 
@@ -101,7 +129,7 @@ export default function Contact() {
                 <span className="contact-icon">✉</span>
                 <div>
                   <h4>E-Posta Adresi</h4>
-                  <p>info@cigercineset.com</p>
+                  <p>{settings.email}</p>
                 </div>
               </div>
 
@@ -109,17 +137,17 @@ export default function Contact() {
                 <span className="contact-icon">🕒</span>
                 <div>
                   <h4>Açılış / Kapanış Saatleri</h4>
-                  <p>Her Gün: 08:00 - Gece 02:00</p>
+                  <p>{settings.workingHours}</p>
                 </div>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="contact-social-wrapper">
-              <a href="#" className="social-icon-btn" aria-label="Instagram">📸</a>
-              <a href="#" className="social-icon-btn" aria-label="Facebook">🔵</a>
-              <a href="#" className="social-icon-btn" aria-label="YouTube">🔴</a>
-              <a href="#" className="social-icon-btn" aria-label="TripAdvisor">🦉</a>
+              <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Instagram">📸</a>
+              <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="Facebook">🔵</a>
+              <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="YouTube">🔴</a>
+              <a href={settings.tripadvisorUrl} target="_blank" rel="noopener noreferrer" className="social-icon-btn" aria-label="TripAdvisor">🦉</a>
             </div>
           </div>
 
@@ -205,12 +233,12 @@ export default function Contact() {
         <div className="contact-map-wrapper glass-card">
           <div className="map-title-wrapper">
             <span className="map-logo-bullet">❖</span>
-            <h3>Diyarbakır Suriçi Tarihi Gazi Caddesi Gaziantep ve Mardin Yolu Bağlantısı</h3>
+            <h3>{settings.restaurantName} Harita Lokasyonu</h3>
           </div>
           <iframe 
-            src="https://www.openstreetmap.org/export/embed.html?bbox=40.228%2C37.906%2C40.245%2C37.918&amp;layer=mapnik&amp;marker=37.912%2C40.237"
+            src={settings.mapUrl}
             className="contact-map-iframe"
-            title="Ciğerci Neşet Suriçi Harita Lokasyonu"
+            title={`${settings.restaurantName} Harita Lokasyonu`}
             allowFullScreen=""
             loading="lazy"
           ></iframe>
