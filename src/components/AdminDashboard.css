@@ -842,121 +842,95 @@
 }
 
 /* ==========================================
-   Split Form Layouts (Settings Pane)
+   Clean Settings & Split Card Layouts
    ========================================== */
 .settings-split-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 2.5rem;
+  margin-top: 2rem;
 }
 
-.admin-form-box {
-  background: rgba(11, 10, 9, 0.4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: 2.5rem;
-}
-
-.admin-form-box-title {
-  font-size: 1.3rem;
-  margin-bottom: 1.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  border-bottom: 1px solid rgba(211, 117, 70, 0.15);
-  padding-bottom: 0.75rem;
-}
-
-.admin-form {
+.admin-settings-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
-.form-row {
+.settings-card {
+  background: rgba(23, 21, 19, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  position: relative;
+}
+
+.settings-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-card.card-danger {
+  border-color: rgba(192, 44, 27, 0.25);
+}
+
+.settings-card.card-danger:hover {
+  border-color: rgba(192, 44, 27, 0.45);
+  box-shadow: 0 4px 15px rgba(192, 44, 27, 0.08);
+}
+
+.settings-card-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin: 0 0 1.75rem 0;
+  border-bottom: 1px solid rgba(211, 117, 70, 0.15);
+  padding-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--color-text);
+}
+
+.settings-card-title.text-danger {
+  color: #ff8888;
+  border-bottom-color: rgba(192, 44, 27, 0.2);
+}
+
+.settings-card-title.text-gold {
+  color: var(--color-primary-light);
+}
+
+.settings-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-.form-group {
+.settings-form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.settings-sidebar-widgets {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-primary-light);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 48px;
-  background: rgba(11, 10, 9, 0.8);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  padding: 0 1.1rem;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  border-radius: 6px;
-  outline: none;
-  transition: var(--transition);
-}
-
-.form-group textarea {
-  height: auto;
-  padding: 1rem 1.1rem;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px rgba(211, 117, 70, 0.2);
-  background: rgba(11, 10, 9, 0.9);
-}
-
-.form-checkbox-group {
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-}
-
-.form-checkbox-group input {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: var(--color-primary);
-}
-
-.form-checkbox-group label {
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-.btn-form-save {
-  padding: 0.9rem 2rem;
-  margin-top: 1rem;
-  align-self: flex-start;
+  gap: 2rem;
 }
 
 .password-alert-box {
-  padding: 1rem;
-  border-radius: 6px;
+  background: rgba(192, 44, 27, 0.15);
+  border: 1px solid rgba(192, 44, 27, 0.3);
+  color: #ff8888;
+  padding: 0.95rem;
+  border-radius: 8px;
+  margin-bottom: 1.75rem;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .password-alert-box.success {
@@ -965,10 +939,95 @@
   color: #72cc9b;
 }
 
-.password-alert-box.error {
-  background: rgba(192, 44, 27, 0.15);
-  border: 1px solid rgba(192, 44, 27, 0.3);
-  color: #ff8888;
+.btn-form-save-large {
+  width: 100%;
+  padding: 1.1rem;
+  font-size: 1.05rem;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(211, 117, 70, 0.2);
+}
+
+.btn-card-save-accent {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.help-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.help-hint {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  opacity: 0.75;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+/* ==========================================
+   Legal Text Panels Redesign
+   ========================================== */
+.legal-split-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2.5rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+.legal-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.legal-sidebar-btn {
+  width: 100%;
+  text-align: left;
+  background: rgba(23, 21, 19, 0.45);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.legal-sidebar-btn:hover {
+  background: rgba(211, 117, 70, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.legal-sidebar-btn.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 15px rgba(211, 117, 70, 0.3);
+}
+
+.legal-editor-card {
+  background: rgba(23, 21, 19, 0.6);
+  padding: 2.5rem;
+}
+
+.legal-textarea {
+  min-height: 380px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
 }
 
 /* ==========================================
@@ -1052,6 +1111,73 @@
 
 .menu-item-soldout .admin-menu-card-img-wrapper {
   filter: grayscale(0.85) contrast(1.1);
+}
+
+/* ==========================================
+   Form Fields Styling
+   ========================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  background: rgba(11, 10, 9, 0.8);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  border-radius: 6px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-group textarea {
+  height: auto;
+  padding: 1rem 1.1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(211, 117, 70, 0.2);
+  background: rgba(11, 10, 9, 0.9);
+}
+
+.form-checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.form-checkbox-group input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.form-checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+  text-transform: none;
 }
 
 /* ==========================================
@@ -1154,17 +1280,53 @@
   }
 
   /* Split grids stack */
-  .form-row {
+  .settings-form-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   
-  .admin-form-box {
+  .settings-form-grid .form-group {
+    grid-column: 1 / -1 !important;
+  }
+  
+  .settings-card {
+    padding: 1.50rem;
+  }
+  
+  .btn-form-save-large {
+    width: 100%;
+  }
+
+  /* Legal doc layout stack */
+  .legal-split-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .legal-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  
+  .legal-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .legal-sidebar-btn {
+    white-space: nowrap;
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.85rem;
+  }
+  
+  .legal-editor-card {
     padding: 1.5rem;
   }
   
-  .btn-form-save {
-    width: 100%;
+  .legal-textarea {
+    min-height: 280px;
   }
 
   /* Modal Adaptations */

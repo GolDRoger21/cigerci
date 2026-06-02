@@ -1176,228 +1176,224 @@ export default function AdminDashboard() {
           <div className="site-settings-panel">
             <h3 className="tab-pane-title">Sistem & Site Ayarları</h3>
             
-            <div className="settings-split-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "3rem", marginTop: "2rem" }}>
+            <div className="settings-split-grid">
               
               {/* Left Side - Global config form */}
-              <form onSubmit={handleSettingsSubmit} className="login-form">
-                <h4 className="gold-text" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem" }}>📜 Genel Restoran Bilgileri</h4>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label>Restoran Adı</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.restaurantName}
-                      onChange={(e) => setSettingsForm({...settingsForm, restaurantName: e.target.value})}
-                    />
-                  </div>
+              <form onSubmit={handleSettingsSubmit} className="admin-settings-form">
+                <div className="settings-card">
+                  <h4 className="settings-card-title">📜 Genel Restoran Bilgileri</h4>
+                  <div className="settings-form-grid">
+                    <div className="form-group">
+                      <label>Restoran Adı</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.restaurantName}
+                        onChange={(e) => setSettingsForm({...settingsForm, restaurantName: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Çalışma Saatleri</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.workingHours}
-                      onChange={(e) => setSettingsForm({...settingsForm, workingHours: e.target.value})}
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Çalışma Saatleri</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.workingHours}
+                        onChange={(e) => setSettingsForm({...settingsForm, workingHours: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Slogan (Footer'da Gösterilir)</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.slogan}
-                      onChange={(e) => setSettingsForm({...settingsForm, slogan: e.target.value})}
-                    />
-                  </div>
+                    <div className="form-group full-width">
+                      <label>Slogan (Footer'da Gösterilir)</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.slogan}
+                        onChange={(e) => setSettingsForm({...settingsForm, slogan: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Özel Vurgu Sloganı (Çalışma Saatlerinin Altı)</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.mottoHighlight}
-                      onChange={(e) => setSettingsForm({...settingsForm, mottoHighlight: e.target.value})}
-                    />
-                  </div>
+                    <div className="form-group full-width">
+                      <label>Özel Vurgu Sloganı (Çalışma Saatlerinin Altı)</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.mottoHighlight}
+                        onChange={(e) => setSettingsForm({...settingsForm, mottoHighlight: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Anasayfa Canlı Arka Plan Video Linki (MP4 veya YouTube)</label>
-                    <input 
-                      type="text" 
-                      placeholder="Örnek: MP4 Linki veya YouTube Kodu/Linki"
-                      value={settingsForm.heroVideoUrl || ""}
-                      onChange={(e) => setSettingsForm({...settingsForm, heroVideoUrl: e.target.value})}
-                    />
-                    <small style={{ color: "rgba(255,255,255,0.45)", marginTop: "0.25rem", display: "block" }}>
-                      Sitenin kotasını korumak için video harici CDN veya YouTube üzerinden oynatılır. Buraya doğrudan bir <code>.mp4</code> video linki girebilir (sıfır arayüz / tam akıcılık için önerilir) ya da 11 haneli YouTube video kodunu girip kaydedebilirsiniz.
-                    </small>
+                    <div className="form-group full-width">
+                      <label>Anasayfa Canlı Arka Plan Video Linki (MP4 veya YouTube)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Örnek: MP4 Linki veya YouTube Kodu/Linki"
+                        value={settingsForm.heroVideoUrl || ""}
+                        onChange={(e) => setSettingsForm({...settingsForm, heroVideoUrl: e.target.value})}
+                      />
+                      <small className="help-hint">
+                        Sitenin kotasını korumak için video harici CDN veya YouTube üzerinden oynatılır. Buraya doğrudan bir <code>.mp4</code> video linki girebilir (sıfır arayüz / tam akıcılık için önerilir) ya da 11 haneli YouTube video kodunu girip kaydedebilirsiniz.
+                      </small>
+                    </div>
                   </div>
                 </div>
 
-                <h4 className="gold-text" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem", marginTop: "2rem" }}>📞 İletişim & Konum Bilgileri</h4>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label>Telefon Numarası</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.phone}
-                      onChange={(e) => setSettingsForm({...settingsForm, phone: e.target.value})}
-                    />
-                  </div>
+                <div className="settings-card">
+                  <h4 className="settings-card-title">📞 İletişim & Konum Bilgileri</h4>
+                  <div className="settings-form-grid">
+                    <div className="form-group">
+                      <label>Telefon Numarası</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.phone}
+                        onChange={(e) => setSettingsForm({...settingsForm, phone: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>E-Posta Adresi</label>
-                    <input 
-                      type="email" 
-                      value={settingsForm.email}
-                      onChange={(e) => setSettingsForm({...settingsForm, email: e.target.value})}
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>E-Posta Adresi</label>
+                      <input 
+                        type="email" 
+                        value={settingsForm.email}
+                        onChange={(e) => setSettingsForm({...settingsForm, email: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Açık Adres Bilgisi</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.address}
-                      onChange={(e) => setSettingsForm({...settingsForm, address: e.target.value})}
-                    />
-                  </div>
+                    <div className="form-group full-width">
+                      <label>Açık Adres Bilgisi</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.address}
+                        onChange={(e) => setSettingsForm({...settingsForm, address: e.target.value})}
+                      />
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Harita Embed (OSM/Google Maps Iframe Embed Src) URL</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.mapUrl}
-                      onChange={(e) => setSettingsForm({...settingsForm, mapUrl: e.target.value})}
-                    />
+                    <div className="form-group full-width">
+                      <label>Harita Embed (OSM/Google Maps Iframe Embed Src) URL</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.mapUrl}
+                        onChange={(e) => setSettingsForm({...settingsForm, mapUrl: e.target.value})}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <h4 className="gold-text" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem", marginTop: "2rem" }}>📢 En Üst Kayan Duyuru Barı Ayarları</h4>
-                
-                <div className="form-grid">
-                  <div className="form-group" style={{ gridColumn: "1 / -1", flexDirection: "row", gap: "0.5rem", alignItems: "center" }}>
-                    <input 
-                      type="checkbox" 
-                      id="announcementActive"
-                      checked={settingsForm.announcementActive}
-                      onChange={(e) => setSettingsForm({...settingsForm, announcementActive: e.target.checked})}
-                      style={{ width: "20px", height: "20px", cursor: "pointer" }}
-                    />
-                    <label htmlFor="announcementActive" style={{ textTransform: "none", cursor: "pointer", fontSize: "0.95rem" }}>
-                      Anasayfada en üstte kayan duyuru barını göster.
-                    </label>
-                  </div>
+                <div className="settings-card">
+                  <h4 className="settings-card-title">📢 En Üst Kayan Duyuru Barı Ayarları</h4>
+                  <div className="settings-form-grid">
+                    <div className="form-group full-width form-checkbox-group">
+                      <input 
+                        type="checkbox" 
+                        id="announcementActive"
+                        checked={settingsForm.announcementActive}
+                        onChange={(e) => setSettingsForm({...settingsForm, announcementActive: e.target.checked})}
+                      />
+                      <label htmlFor="announcementActive">
+                        Anasayfada en üstte kayan duyuru barını göster.
+                      </label>
+                    </div>
 
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Duyuru Metni</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.announcementText}
-                      onChange={(e) => setSettingsForm({...settingsForm, announcementText: e.target.value})}
-                      placeholder="Örn: Ramazan ayına özel iftar menümüz başlamıştır!"
-                    />
+                    <div className="form-group full-width">
+                      <label>Duyuru Metni</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.announcementText}
+                        onChange={(e) => setSettingsForm({...settingsForm, announcementText: e.target.value})}
+                        placeholder="Örn: Ramazan ayına özel iftar menümüz başlamıştır!"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <h4 className="gold-text" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem", marginTop: "2rem" }}>🔗 Sosyal Medya Linkleri</h4>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label>Instagram URL</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.instagramUrl}
-                      onChange={(e) => setSettingsForm({...settingsForm, instagramUrl: e.target.value})}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Facebook URL</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.facebookUrl}
-                      onChange={(e) => setSettingsForm({...settingsForm, facebookUrl: e.target.value})}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>YouTube URL</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.youtubeUrl}
-                      onChange={(e) => setSettingsForm({...settingsForm, youtubeUrl: e.target.value})}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>TripAdvisor URL</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.tripadvisorUrl}
-                      onChange={(e) => setSettingsForm({...settingsForm, tripadvisorUrl: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <h4 className="gold-text" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem", marginTop: "2rem" }}>📅 Masa Rezervasyon Sınırlandırmaları</h4>
-                
-                <div className="form-grid">
-                  <div className="form-group" style={{ gridColumn: "1 / -1", flexDirection: "row", gap: "0.5rem", alignItems: "center" }}>
-                    <input 
-                      type="checkbox" 
-                      id="reservationsEnabled"
-                      checked={settingsForm.reservationsEnabled}
-                      onChange={(e) => setSettingsForm({...settingsForm, reservationsEnabled: e.target.checked})}
-                      style={{ width: "20px", height: "20px", cursor: "pointer" }}
-                    />
-                    <label htmlFor="reservationsEnabled" style={{ textTransform: "none", cursor: "pointer", fontSize: "0.95rem" }}>
-                      Online rezervasyon sistemini AÇIK tut (Kapatırsanız form yerine uyarı çıkar).
-                    </label>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Slot Başı Maksimum Kişi Kapasitesi</label>
-                    <input 
-                      type="number" 
-                      value={settingsForm.maxGuestsPerSlot}
-                      onChange={(e) => setSettingsForm({...settingsForm, maxGuestsPerSlot: parseInt(e.target.value)})}
-                    />
-                  </div>
-
-                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <label>Rezervasyon Sistemi Kapalıyken Çıkacak Mesaj</label>
-                    <textarea 
-                      rows="2"
-                      value={settingsForm.reservationsDisabledMessage}
-                      onChange={(e) => setSettingsForm({...settingsForm, reservationsDisabledMessage: e.target.value})}
-                    ></textarea>
+                <div className="settings-card">
+                  <h4 className="settings-card-title">🔗 Sosyal Medya Linkleri</h4>
+                  <div className="settings-form-grid">
+                    <div className="form-group">
+                      <label>Instagram URL</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.instagramUrl}
+                        onChange={(e) => setSettingsForm({...settingsForm, instagramUrl: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Facebook URL</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.facebookUrl}
+                        onChange={(e) => setSettingsForm({...settingsForm, facebookUrl: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>YouTube URL</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.youtubeUrl}
+                        onChange={(e) => setSettingsForm({...settingsForm, youtubeUrl: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>TripAdvisor URL</label>
+                      <input 
+                        type="text" 
+                        value={settingsForm.tripadvisorUrl}
+                        onChange={(e) => setSettingsForm({...settingsForm, tripadvisorUrl: e.target.value})}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ marginTop: "2.5rem", width: "100%", padding: "1.1rem" }}>
+                <div className="settings-card">
+                  <h4 className="settings-card-title">📅 Masa Rezervasyon Sınırlandırmaları</h4>
+                  <div className="settings-form-grid">
+                    <div className="form-group full-width form-checkbox-group">
+                      <input 
+                        type="checkbox" 
+                        id="reservationsEnabled"
+                        checked={settingsForm.reservationsEnabled}
+                        onChange={(e) => setSettingsForm({...settingsForm, reservationsEnabled: e.target.checked})}
+                      />
+                      <label htmlFor="reservationsEnabled">
+                        Online rezervasyon sistemini AÇIK tut (Kapatırsanız form yerine uyarı çıkar).
+                      </label>
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label>Slot Başı Maksimum Kişi Kapasitesi</label>
+                      <input 
+                        type="number" 
+                        value={settingsForm.maxGuestsPerSlot}
+                        onChange={(e) => setSettingsForm({...settingsForm, maxGuestsPerSlot: parseInt(e.target.value)})}
+                      />
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label>Rezervasyon Sistemi Kapalıyken Çıkacak Mesaj</label>
+                      <textarea 
+                        rows="2"
+                        value={settingsForm.reservationsDisabledMessage}
+                        onChange={(e) => setSettingsForm({...settingsForm, reservationsDisabledMessage: e.target.value})}
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-form-save-large">
                   Tüm Site Ayarlarını Veritabanına Kaydet 💾
                 </button>
               </form>
 
               {/* Right Side - Passcode Security change */}
-              <div>
-                <div className="glass-card animate-zoom" style={{ padding: "2rem", border: "1px solid rgba(178,34,34,0.3)", boxShadow: "0 0 15px rgba(178,34,34,0.05)" }}>
-                  <h4 style={{ color: "#ff8888", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "0.5rem", marginBottom: "1.5rem" }}>🔒 Yönetici Giriş Şifresini Değiştir</h4>
+              <div className="settings-sidebar-widgets">
+                <div className="settings-card card-danger">
+                  <h4 className="settings-card-title text-danger">🔒 Giriş Şifresini Değiştir</h4>
                   
                   {passwordMessage.text && (
-                    <div 
-                      className="login-error-alert" 
-                      style={{ 
-                        background: passwordMessage.type === "success" ? "rgba(46, 117, 89, 0.2)" : "rgba(178, 34, 34, 0.2)",
-                        borderColor: passwordMessage.type === "success" ? "#72cc9b" : "#ff8888",
-                        color: passwordMessage.type === "success" ? "#72cc9b" : "#ff8888",
-                      }}
-                    >
+                    <div className={`password-alert-box ${passwordMessage.type}`}>
                       {passwordMessage.text}
                     </div>
                   )}
 
-                  <form onSubmit={handlePasswordChange} className="login-form">
+                  <form onSubmit={handlePasswordChange} className="admin-settings-form">
                     <div className="form-group">
-                      <label>Mevcut Şifre (Giriş Yaptığınız) *</label>
+                      <label>Mevcut Şifre *</label>
                       <input 
                         type="password" 
                         required
@@ -1429,16 +1425,16 @@ export default function AdminDashboard() {
                       />
                     </div>
 
-                    <button type="submit" className="btn btn-accent" style={{ marginTop: "1rem", width: "100%" }}>
+                    <button type="submit" className="btn btn-accent btn-card-save-accent">
                       Şifreyi Güncelle 🔑
                     </button>
                   </form>
                 </div>
                 
                 {/* Security advisory */}
-                <div className="glass-card" style={{ padding: "1.5rem", marginTop: "2rem", fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-                  <h5 className="gold-text" style={{ margin: "0 0 0.5rem 0", fontSize: "0.95rem" }}>🛡️ Güvenlik Tavsiyesi</h5>
-                  <p style={{ margin: 0, lineHeight: "1.5" }}>
+                <div className="settings-card">
+                  <h5 className="settings-card-title text-gold">🛡️ Güvenlik Tavsiyesi</h5>
+                  <p className="help-text">
                     Yönetici şifreniz doğrudan Google Cloud sunucularında AES tabanlı protokollerle korunmaktadır. Yetkisiz girişleri önlemek için şifrenizi Diyarbakır dışı ağlarda başkalarıyla paylaşmayınız.
                   </p>
                 </div>
@@ -1451,13 +1447,11 @@ export default function AdminDashboard() {
         {/* 6. LEGAL PAGES PANEL */}
         {activeTab === "legal" && (
           <div className="legal-management-panel">
-            <div className="tab-pane-header-actions">
-              <h3 className="tab-pane-title">Yasal Sayfalar & Metin Yönetimi</h3>
-            </div>
+            <h3 className="tab-pane-title">Yasal Metin Yönetimi</h3>
             
-            <div style={{ display: "grid", gridTemplateColumns: "250px 1fr", gap: "2.5rem", marginTop: "2rem" }} className="settings-split-grid">
+            <div className="legal-split-grid">
               {/* Sidebar list of legal documents */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div className="legal-sidebar">
                 {[
                   { id: "privacy_policy", name: "🔒 Gizlilik Politikası" },
                   { id: "terms_of_use", name: "📝 Kullanım Koşulları" },
@@ -1465,15 +1459,7 @@ export default function AdminDashboard() {
                 ].map(docItem => (
                   <button
                     key={docItem.id}
-                    className="admin-tab-btn"
-                    style={{ 
-                      textAlign: "left", 
-                      width: "100%", 
-                      justifyContent: "flex-start",
-                      background: activeLegalDoc === docItem.id ? "var(--color-primary)" : "rgba(21,19,16,0.6)",
-                      color: activeLegalDoc === docItem.id ? "#000" : "var(--color-text-muted)",
-                      borderColor: activeLegalDoc === docItem.id ? "var(--color-primary)" : "rgba(212,175,55,0.15)"
-                    }}
+                    className={`legal-sidebar-btn ${activeLegalDoc === docItem.id ? "active" : ""}`}
                     onClick={() => handleSelectLegalDoc(docItem.id)}
                   >
                     {docItem.name}
@@ -1482,15 +1468,15 @@ export default function AdminDashboard() {
               </div>
 
               {/* Editing Form */}
-              <div className="glass-card" style={{ padding: "2.5rem", borderRadius: "8px", background: "rgba(20, 18, 16, 0.4)" }}>
+              <div className="settings-card legal-editor-card">
                 {legalLoading ? (
                   <div className="text-center" style={{ padding: "3rem" }}>
                     <div className="menu-spinner" style={{ margin: "0 auto 1.5rem auto" }}></div>
                     <p className="gold-text">Yasal metin yükleniyor...</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleLegalSubmit} className="login-form">
-                    <h4 className="gold-text" style={{ margin: "0 0 1.5rem 0", fontSize: "1.25rem", fontFamily: "var(--font-display)" }}>
+                  <form onSubmit={handleLegalSubmit} className="admin-settings-form">
+                    <h4 className="settings-card-title text-gold">
                       {legalForm.title} Sayfa İçeriğini Düzenle
                     </h4>
                     
@@ -1504,22 +1490,21 @@ export default function AdminDashboard() {
                       />
                     </div>
 
-                    <div className="form-group" style={{ marginTop: "1.5rem" }}>
+                    <div className="form-group">
                       <label>Sayfa Detaylı Metin İçeriği * (Paragrafları Enter tuşuna basarak ayırın)</label>
                       <textarea
                         required
                         rows="15"
+                        className="legal-textarea"
                         value={legalForm.content}
                         onChange={e => setLegalForm({ ...legalForm, content: e.target.value })}
                         placeholder="Sayfada görüntülenecek yasal metin paragraflarını yazınız..."
-                        style={{ fontFamily: "inherit", lineHeight: "1.6", fontSize: "0.95rem", minHeight: "300px" }}
                       ></textarea>
                     </div>
 
                     <button 
                       type="submit" 
-                      className="btn btn-primary" 
-                      style={{ marginTop: "2rem", width: "100%", padding: "1.1rem" }}
+                      className="btn btn-primary btn-form-save-large" 
                       disabled={actionLoading}
                     >
                       {actionLoading ? "Kaydediliyor..." : `${legalForm.title} Metnini Kaydet ve Yayınla 💾`}

@@ -32,7 +32,7 @@ service cloud.firestore {
       allow create: if request.resource.data.adminPasscode != null;
       allow update: if request.resource.data.adminPasscode == resource.data.adminPasscode 
                     || request.resource.data.adminPasscode == "neset21"
-                    || (request.resource.data.currentPasscode != null && request.resource.data.currentPasscode == resource.data.adminPasscode);
+                    || ("currentPasscode" in request.resource.data && request.resource.data.currentPasscode == resource.data.adminPasscode);
       allow delete: if resource.data.adminPasscode == "neset21";
     }
     
