@@ -1,8 +1,31 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
 import "./Hero.css";
 
 export default function Hero() {
+  const [heroVideoId, setHeroVideoId] = useState("Hzq_6lFJZUI");
+
+  // Fetch dynamic video setting from Firestore config
+  useEffect(() => {
+    const fetchVideoSetting = async () => {
+      try {
+        const docRef = doc(db, "settings", "site_config");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.heroVideoId) {
+            setHeroVideoId(data.heroVideoId);
+          }
+        }
+      } catch (err) {
+        console.error("Video ayarı yüklenirken hata oluştu:", err);
+      }
+    };
+    fetchVideoSetting();
+  }, []);
+
   const handleScrollTo = (e, id) => {
     e.preventDefault();
     const element = document.getElementById(id);
@@ -26,7 +49,7 @@ export default function Hero() {
       <div className="video-background-container">
         <iframe
           className="video-bg-iframe"
-          src="https://www.youtube.com/embed/Hzq_6lFJZUI?autoplay=1&mute=1&loop=1&playlist=Hzq_6lFJZUI&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1"
+          src={`https://www.youtube.com/embed/${heroVideoId}?autoplay=1&mute=1&loop=1&playlist=${heroVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`}
           frameBorder="0"
           allow="autoplay; encrypted-media"
           title="Ciğerci Neşet Canlı Ocakbaşı Videosu"

@@ -27,7 +27,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(1.22); /* Scaled 1.22x to completely push YouTube player bars, overlays, and logos off-screen */
   width: 100vw;
   height: 177.77vw; /* 9:16 Aspect Ratio (100 * 16 / 9) */
   min-height: 100vh;

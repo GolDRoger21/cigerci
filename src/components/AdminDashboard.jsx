@@ -36,6 +36,7 @@ export default function AdminDashboard() {
     slogan: "Diyarbakır'ın Kadim Tarihinden, Ocakbaşı Sıcaklığıyla Sofranıza...",
     announcementActive: true,
     announcementText: "",
+    heroVideoId: "Hzq_6lFJZUI",
     phone: "",
     email: "",
     address: "",
@@ -1215,6 +1216,19 @@ export default function AdminDashboard() {
                       value={settingsForm.mottoHighlight}
                       onChange={(e) => setSettingsForm({...settingsForm, mottoHighlight: e.target.value})}
                     />
+                  </div>
+
+                  <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                    <label>Anasayfa Canlı Arka Plan Video Kodu (YouTube ID)</label>
+                    <input 
+                      type="text" 
+                      placeholder="Örnek: Hzq_6lFJZUI"
+                      value={settingsForm.heroVideoId || ""}
+                      onChange={(e) => setSettingsForm({...settingsForm, heroVideoId: e.target.value})}
+                    />
+                    <small style={{ color: "rgba(255,255,255,0.45)", marginTop: "0.25rem", display: "block" }}>
+                      YouTube video linkindeki (örneğin <code>https://www.youtube.com/watch?v=Hzq_6lFJZUI</code> veya <code>https://www.youtube.com/shorts/Hzq_6lFJZUI</code>) 11 haneli benzersiz kodu girin. Sitenin kotasını korumak için doğrudan YouTube üzerinden oynatılır.
+                    </small>
                   </div>
                 </div>
 
