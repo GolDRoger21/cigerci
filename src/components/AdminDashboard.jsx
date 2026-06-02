@@ -482,11 +482,12 @@ export default function AdminDashboard() {
       const docRef = doc(db, "settings", "site_config");
       const updatedConfig = {
         ...siteSettings,
-        adminPasscode: passwordForm.newPass
+        adminPasscode: passwordForm.newPass,
+        currentPasscode: passcode // Send this to authorize passcode change in rules!
       };
       
       // Save it (authorized by current passcode)
-      await setDoc(docRef, { ...updatedConfig, adminPasscode: passcode });
+      await setDoc(docRef, updatedConfig);
       
       // Update local credentials
       setPasscode(passwordForm.newPass);
@@ -498,7 +499,7 @@ export default function AdminDashboard() {
       setPasswordMessage({ text: "Yönetici giriş şifreniz başarıyla güncellendi! Artık yeni şifreniz geçerlidir.", type: "success" });
     } catch (err) {
       console.error("Şifre güncellenemedi:", err);
-      setPasswordMessage({ text: "Veritabanı bağlantı hatası oluştu!", type: "error" });
+      setPasswordMessage({ text: "Veritabanı bağlantı hatası veya yetkisiz işlem!", type: "error" });
     }
     setActionLoading(false);
   };
