@@ -97,6 +97,17 @@ a {
   transition: var(--transition);
 }
 
+/* Visible keyboard-focus ring (does not show on mouse click) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Utility Classes */
 .gold-text {
   color: var(--color-primary);

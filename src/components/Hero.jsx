@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import "./Hero.css";
@@ -10,6 +10,7 @@ export default function Hero() {
   const [videoActive, setVideoActive] = useState(false);
   const [isYouTube, setIsYouTube] = useState(false);
   const [youtubeId, setYoutubeId] = useState("");
+  const videoRef = useRef(null);
 
   // Fetch dynamic video setting from Firestore config
   useEffect(() => {
@@ -63,19 +64,46 @@ export default function Hero() {
       }
       setYoutubeId(id || "Hzq_6lFJZUI");
 
-      // YouTube takes slightly longer to trigger autoplay, 1.8s delay hides it perfectly
+      // YouTube takes slightly longer to trigger autoplay, 1.8s delay hides it perfectly.
+      // NOTE: Mobile browsers commonly block iframe autoplay, so the native MP4 path is the
+      // reliable one for phones. We still keep the poster visible behind the iframe as a graceful
+      // fallback if YouTube never starts.
       const timer = setTimeout(() => {
         setVideoActive(true);
       }, 1800);
       return () => clearTimeout(timer);
     } else {
-      // Native HTML5 video starts instantly, 0.8s is enough for a smooth fade transition
-      const timer = setTimeout(() => {
-        setVideoActive(true);
-      }, 800);
-      return () => clearTimeout(timer);
+      // Native HTML5 video: the fade-in is driven by the real playback events (onPlaying /
+      // onLoadedData) further down — not a blind timer — so on mobile we never fade the poster
+      // out into a blank screen if autoplay is blocked (iOS Low Power Mode, data saver, etc.).
+      // This generous timer is only a safety net for the rare case the events never fire.
+      const fallbackTimer = setTimeout(() => {
+        const v = videoRef.current;
+        if (v && v.readyState >= 2) setVideoActive(true);
+      }, 3000);
+      return () => clearTimeout(fallbackTimer);
     }
   }, [heroVideoUrl]);
+
+  // Best-effort programmatic autoplay for the native video. Some mobile browsers ignore the
+  // autoPlay attribute but allow a muted .play() call; if it is still rejected we keep the poster.
+  useEffect(() => {
+    if (isYouTube) return;
+    const v = videoRef.current;
+    if (!v) return;
+    const tryPlay = () => {
+      const p = v.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {/* autoplay blocked — poster stays visible, no blank screen */});
+      }
+    };
+    tryPlay();
+  }, [heroVideoUrl, isYouTube]);
+
+  // Reveal the native video only once it is actually rendering frames.
+  const handleVideoReady = () => {
+    if (!isYouTube) setVideoActive(true);
+  };
 
   const handleScrollTo = (e, id) => {
     e.preventDefault();
@@ -111,12 +139,17 @@ export default function Hero() {
           ></iframe>
         ) : (
           <video
+            ref={videoRef}
             className={`video-bg-native ${videoActive ? "fade-in" : ""}`}
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
             poster="/resimler/hero_ocakbasi.png"
+            onLoadedData={handleVideoReady}
+            onPlaying={handleVideoReady}
+            onError={() => setVideoActive(false)} // keep poster on failure, never a blank background
             key={heroVideoUrl} // Re-renders the tag cleanly if URL changes
           >
             <source src={heroVideoUrl} type="video/mp4" />

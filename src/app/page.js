@@ -1,6 +1,4 @@
 import React from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/config";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HistoryStory from "../components/HistoryStory";
@@ -11,45 +9,11 @@ import Reviews from "../components/Reviews";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 
-export default async function Home() {
-  let settings = {
-    restaurantName: "Ciğerci Neşet",
-    slogan: "Diyarbakır'ın Kadim Tarihinden, Ocakbaşı Sıcaklığıyla Sofranıza...",
-    workingHours: "Haftanın Her Günü: 08:00 - Gece 02:00",
-    mottoHighlight: "Gece Ciğeri Servisimiz Mevcuttur."
-  };
-
-  try {
-    const docRef = doc(db, "settings", "site_config");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      settings = docSnap.data();
-    }
-  } catch (err) {
-    console.error("Sunucu tarafında ayarlar yüklenemedi:", err);
-  }
-
-  const renderFooterLogoText = () => {
-    if (settings.restaurantName) {
-      const parts = settings.restaurantName.split(" ");
-      if (parts.length > 1) {
-        const lastWord = parts.pop();
-        const mainParts = parts.join(" ");
-        return (
-          <>
-            {mainParts.toLocaleUpperCase("tr-TR")} <span className="gold-text">{lastWord.toLocaleUpperCase("tr-TR")}</span>
-          </>
-        );
-      }
-      return <span className="gold-text">{settings.restaurantName.toLocaleUpperCase("tr-TR")}</span>;
-    }
-    return (
-      <>
-        CİĞERCİ <span className="gold-text">NEŞET</span>
-      </>
-    );
-  };
-
+// Each section fetches its own dynamic data client-side from Firestore, so the
+// homepage stays a lightweight static shell. (Previously this did a build-time
+// getDoc whose result was never used — removed to drop the build-time network
+// dependency for a fully static export.)
+export default function Home() {
   return (
     <>
       {/* Sticky Header Nav */}
@@ -84,4 +48,3 @@ export default async function Home() {
     </>
   );
 }
-

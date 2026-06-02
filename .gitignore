@@ -42,3 +42,6 @@ next-env.d.ts
 
 # firebase credentials
 serviceAccountKey.json
+
+# local claude tooling
+.claude/

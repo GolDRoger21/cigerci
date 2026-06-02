@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbF9oLqQrvg6FKdNQWjKhYlG07Ayf5YBU",
@@ -26,4 +27,8 @@ if (typeof window !== "undefined") {
   db = getFirestore(app);
 }
 
-export { app, db };
+// Firebase Authentication — used to gate the admin panel (replaces the old
+// shared passcode that was exposed in the client bundle & Firestore rules).
+const auth = getAuth(app);
+
+export { app, db, auth };

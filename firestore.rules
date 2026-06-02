@@ -1,81 +1,54 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Yardımcı fonksiyon: settings/site_config dökümanındaki admin şifresini çeker
-    function getAdminPasscode() {
-      return exists(/databases/$(database)/documents/settings/site_config)
-        ? get(/databases/$(database)/documents/settings/site_config).data.adminPasscode
-        : "neset21";
-    }
-    
-    // Şifre doğrulama kuralları (yazma ve güncelleme için)
-    function isAuthorizedWrite() {
-      return request.resource.data.adminPasscode == getAdminPasscode() 
-             || request.resource.data.adminPasscode == "neset21"
-             || request.resource.data.adminPasscode == "2121";
-    }
-    
-    // Şifre doğrulama kuralları (silme için - dökümanın içindeki şifrenin doğruluğunu kontrol eder)
-    function isAuthorizedDelete() {
-      return resource.data.adminPasscode == getAdminPasscode() 
-             || resource.data.adminPasscode == "neset21"
-             || resource.data.adminPasscode == "2121";
+
+    // Admin = any signed-in Firebase Authentication user. The admin panel is the
+    // only place that signs in, so authenticated == authorized for admin actions.
+    function isAdmin() {
+      return request.auth != null;
     }
 
-    // 1. Menu kuralları: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
+    // 1. Menu: herkes okuyabilir (site menüsü), sadece admin yazabilir/silebilir
     match /menu/{document} {
       allow read: if true;
-      allow create, update: if isAuthorizedWrite();
-      allow delete: if isAuthorizedDelete();
-    }
-    
-    // 2. Settings kuralları: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
-    match /settings/{document} {
-      allow read: if true;
-      allow create: if request.resource.data.adminPasscode != null;
-      allow update: if request.resource.data.adminPasscode == resource.data.adminPasscode 
-                    || request.resource.data.adminPasscode == "neset21"
-                    || request.resource.data.adminPasscode == "2121"
-                    || ("currentPasscode" in request.resource.data && request.resource.data.currentPasscode == resource.data.adminPasscode);
-      allow delete: if resource.data.adminPasscode == "neset21" || resource.data.adminPasscode == "2121";
-    }
-    
-    // 3. Reviews kuralları: Herkes okuyabilir ve yeni yorum ekleyebilir.
-    // Moderasyon ve silme işlemleri için admin şifresi gerekir.
-    match /reviews/{document} {
-      allow read: if true;
-      allow create: if request.resource.data.userName != null 
-                    && request.resource.data.comment != null;
-      allow update: if isAuthorizedWrite();
-      allow delete: if isAuthorizedDelete();
-    }
-    
-    // 4. Reservations kuralları: Herkes yeni rezervasyon ekleyebilir.
-    // Okuma, onaylama/iptal ve silme işlemleri için admin şifresi gerekir.
-    match /reservations/{document} {
-      allow create: if request.resource.data.customerName != null 
-                    && request.resource.data.customerPhone != null;
-      allow read: if true; 
-      allow update: if isAuthorizedWrite();
-      allow delete: if isAuthorizedDelete();
-    }
-    
-    // 5. Messages kuralları: Herkes iletişim formu doldurabilir (create).
-    // Mesajları okuma ve silme admin şifresi gerektirir.
-    match /messages/{document} {
-      allow create: if request.resource.data.name != null 
-                    && request.resource.data.message != null;
-      allow read: if true;
-      allow update: if isAuthorizedWrite();
-      allow delete: if isAuthorizedDelete();
+      allow create, update, delete: if isAdmin();
     }
 
-    // 6. Yasal kurallar: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
+    // 2. Settings: herkes okuyabilir (site yapılandırması), sadece admin yazabilir
+    match /settings/{document} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 3. Reviews: herkes okuyabilir ve yeni yorum gönderebilir.
+    //    Moderasyon (onay) ve silme yalnızca admin.
+    match /reviews/{document} {
+      allow read: if true;
+      allow create: if request.resource.data.userName != null
+                    && request.resource.data.comment != null;
+      allow update, delete: if isAdmin();
+    }
+
+    // 4. Reservations: herkes rezervasyon oluşturabilir.
+    //    Müşteri PII'si (telefon/e-posta) içerdiğinden OKUMA sadece admin'e açıktır.
+    match /reservations/{document} {
+      allow create: if request.resource.data.customerName != null
+                    && request.resource.data.customerPhone != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // 5. Messages: herkes iletişim formu gönderebilir.
+    //    PII içerdiğinden OKUMA sadece admin'e açıktır.
+    match /messages/{document} {
+      allow create: if request.resource.data.name != null
+                    && request.resource.data.message != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // 6. Legal: herkes okuyabilir (yasal metinler), sadece admin yazabilir/silebilir
     match /legal/{document} {
       allow read: if true;
-      allow create, update: if isAuthorizedWrite();
-      allow delete: if isAuthorizedDelete();
+      allow create, update, delete: if isAdmin();
     }
   }
 }

@@ -72,7 +72,7 @@ export default function Gallery() {
               onClick={() => openLightbox(index)}
             >
               <div className="gallery-img-wrapper">
-                <img src={img.src} alt={img.title} className="gallery-img" />
+                <img src={img.src} alt={img.title} className="gallery-img" loading="lazy" />
                 <div className="gallery-item-overlay">
                   <div className="overlay-content">
                     <span className="gallery-item-decor">❖</span>

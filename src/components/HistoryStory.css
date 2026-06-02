@@ -218,8 +218,33 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .secondary-image-wrapper {
     display: none;
+  }
+
+  .history-image-column {
+    height: 300px;
+  }
+
+  .history-subtitle-light {
+    font-size: 1.45rem;
+  }
+
+  .history-paragraph {
+    text-align: left;
+  }
+
+  .history-parallax-divider {
+    height: 260px;
+    margin-top: 3.5rem;
+  }
+
+  .parallax-content {
+    padding: 0 1.25rem;
+  }
+
+  .motto {
+    font-size: 1.3rem;
   }
 }
