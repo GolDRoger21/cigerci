@@ -4,8 +4,14 @@ export const metadata = {
   title: "Tarihi Sur Ocakbaşı Ciğerci Neşet | Diyarbakır'ın Tescilli Ciğer Lezzeti",
   description: "Tarihi Sur surlarının gölgesinde, Neşet Usta'nın meşe kömürü közünde ağır ağır pişen tescilli Diyarbakır kuzu ciğerinin enfes lezzeti. Canlı ocakbaşı rezervasyonu yapın.",
   keywords: "diyarbakır ciğeri, ciğerci neşet, suriçi ciğerci, diyarbakır ocakbaşı, meşhur kuzu ciğer, sur kebap salonu, tescilli ciğer",
-  authors: [{ name: "Ciğerci Neşet" }]
+  authors: [{ name: "Ciğerci Neşet" }],
+  icons: {
+    icon: "/resimler/neset_logo.png",
+    shortcut: "/resimler/neset_logo.png",
+    apple: "/resimler/neset_logo.png"
+  }
 };
+
 
 export const viewport = {
   width: "device-width",

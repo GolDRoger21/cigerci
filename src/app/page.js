@@ -108,6 +108,13 @@ export default async function Home() {
         </div>
 
         <div className="footer-bottom">
+          <div className="footer-legal-links" style={{ marginBottom: "1rem", display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap" }}>
+            <a href="/gizlilik-politikasi" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>Gizlilik Politikası</a>
+            <span style={{ color: "rgba(255,255,255,0.1)", fontSize: "0.8rem" }}>|</span>
+            <a href="/kullanim-kosullari" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>Kullanım Koşulları</a>
+            <span style={{ color: "rgba(255,255,255,0.1)", fontSize: "0.8rem" }}>|</span>
+            <a href="/kvkk" style={{ color: "var(--color-text-muted)", fontSize: "0.8rem", textDecoration: "none" }}>KVKK Aydınlatma Metni</a>
+          </div>
           <p>© {new Date().getFullYear()} {settings.restaurantName}. Tüm Hakları Saklıdır.</p>
           <span className="footer-designer-sign">Tasarım & Altyapı: Next.js + Google Firebase</span>
         </div>

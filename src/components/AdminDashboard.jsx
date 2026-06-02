@@ -88,6 +88,62 @@ export default function AdminDashboard() {
   });
   const [passwordMessage, setPasswordMessage] = useState({ text: "", type: "" });
 
+  // Yasal Metinler state'leri
+  const [activeLegalDoc, setActiveLegalDoc] = useState("privacy_policy");
+  const [legalLoading, setLegalLoading] = useState(false);
+  const [legalForm, setLegalForm] = useState({
+    id: "privacy_policy",
+    title: "Gizlilik Politikası",
+    content: ""
+  });
+
+  // Fetch the selected legal doc from Firestore
+  const handleSelectLegalDoc = async (docId) => {
+    setActiveLegalDoc(docId);
+    setLegalLoading(true);
+    try {
+      const docRef = doc(db, "legal", docId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setLegalForm({
+          id: docId,
+          title: data.title || "",
+          content: data.content || ""
+        });
+      }
+    } catch (err) {
+      console.error("Yasal metin yükleme hatası:", err);
+    }
+    setLegalLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === "legal") {
+      handleSelectLegalDoc("privacy_policy");
+    }
+  }, [activeTab]);
+
+  const handleLegalSubmit = async (e) => {
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      const docRef = doc(db, "legal", legalForm.id);
+      await setDoc(docRef, {
+        id: legalForm.id,
+        title: legalForm.title,
+        content: legalForm.content,
+        updatedAt: new Date().toISOString(),
+        adminPasscode: passcode // Credentials for firestore.rules
+      });
+      alert(`${legalForm.title} başarıyla güncellendi ve sitede yayına alındı! 📜`);
+    } catch (err) {
+      console.error("Yasal metin kaydetme hatası:", err);
+      alert("Metin kaydedilirken hata oluştu! Yetkisiz istek.");
+    }
+    setActionLoading(false);
+  };
+
   // On initial mount, check if passcode is saved in localStorage
   useEffect(() => {
     const savedPass = localStorage.getItem("cigerci_admin_passcode");
@@ -629,6 +685,12 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("settings")}
         >
           ⚙️ Site Ayarları
+        </button>
+        <button 
+          className={`admin-tab-btn ${activeTab === "legal" ? "active" : ""}`}
+          onClick={() => setActiveTab("legal")}
+        >
+          📜 Yasal Metinler
         </button>
       </div>
 
@@ -1365,6 +1427,90 @@ export default function AdminDashboard() {
                     Yönetici şifreniz doğrudan Google Cloud sunucularında AES tabanlı protokollerle korunmaktadır. Yetkisiz girişleri önlemek için şifrenizi Diyarbakır dışı ağlarda başkalarıyla paylaşmayınız.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* 6. LEGAL PAGES PANEL */}
+        {activeTab === "legal" && (
+          <div className="legal-management-panel">
+            <div className="tab-pane-header-actions">
+              <h3 className="tab-pane-title">Yasal Sayfalar & Metin Yönetimi</h3>
+            </div>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "250px 1fr", gap: "2.5rem", marginTop: "2rem" }} className="settings-split-grid">
+              {/* Sidebar list of legal documents */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                {[
+                  { id: "privacy_policy", name: "🔒 Gizlilik Politikası" },
+                  { id: "terms_of_use", name: "📝 Kullanım Koşulları" },
+                  { id: "kvkk", name: "🛡️ KVKK Aydınlatma Metni" }
+                ].map(docItem => (
+                  <button
+                    key={docItem.id}
+                    className="admin-tab-btn"
+                    style={{ 
+                      textAlign: "left", 
+                      width: "100%", 
+                      justifyContent: "flex-start",
+                      background: activeLegalDoc === docItem.id ? "var(--color-primary)" : "rgba(21,19,16,0.6)",
+                      color: activeLegalDoc === docItem.id ? "#000" : "var(--color-text-muted)",
+                      borderColor: activeLegalDoc === docItem.id ? "var(--color-primary)" : "rgba(212,175,55,0.15)"
+                    }}
+                    onClick={() => handleSelectLegalDoc(docItem.id)}
+                  >
+                    {docItem.name}
+                  </button>
+                ))}
+              </div>
+
+              {/* Editing Form */}
+              <div className="glass-card" style={{ padding: "2.5rem", borderRadius: "8px", background: "rgba(20, 18, 16, 0.4)" }}>
+                {legalLoading ? (
+                  <div className="text-center" style={{ padding: "3rem" }}>
+                    <div className="menu-spinner" style={{ margin: "0 auto 1.5rem auto" }}></div>
+                    <p className="gold-text">Yasal metin yükleniyor...</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleLegalSubmit} className="login-form">
+                    <h4 className="gold-text" style={{ margin: "0 0 1.5rem 0", fontSize: "1.25rem", fontFamily: "var(--font-display)" }}>
+                      {legalForm.title} Sayfa İçeriğini Düzenle
+                    </h4>
+                    
+                    <div className="form-group">
+                      <label>Sayfa Başlığı *</label>
+                      <input 
+                        type="text" 
+                        required 
+                        value={legalForm.title} 
+                        onChange={e => setLegalForm({ ...legalForm, title: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="form-group" style={{ marginTop: "1.5rem" }}>
+                      <label>Sayfa Detaylı Metin İçeriği * (Paragrafları Enter tuşuna basarak ayırın)</label>
+                      <textarea
+                        required
+                        rows="15"
+                        value={legalForm.content}
+                        onChange={e => setLegalForm({ ...legalForm, content: e.target.value })}
+                        placeholder="Sayfada görüntülenecek yasal metin paragraflarını yazınız..."
+                        style={{ fontFamily: "inherit", lineHeight: "1.6", fontSize: "0.95rem", minHeight: "300px" }}
+                      ></textarea>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      className="btn btn-primary" 
+                      style={{ marginTop: "2rem", width: "100%", padding: "1.1rem" }}
+                      disabled={actionLoading}
+                    >
+                      {actionLoading ? "Kaydediliyor..." : `${legalForm.title} Metnini Kaydet ve Yayınla 💾`}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>

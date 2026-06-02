@@ -46,12 +46,6 @@ service cloud.firestore {
     match /reservations/{document} {
       allow create: if request.resource.data.customerName != null 
                     && request.resource.data.customerPhone != null;
-      // Okuma, güncelleme ve silme sadece şifreyle doğrulanabilir
-      // Okuma yetkisi admin panelinde kullanılacağı için (giriş yapıldığında),
-      // veya client tarafında beklemede durumunu sorgulamak için.
-      // Admin veri çekerken toplu okuduğu için read kuralını şimdilik açık bırakıyoruz 
-      // (çünkü getQueries veya getDocs yaparken client-side parametre gönderemez).
-      // Ancak güvenliği artırmak için sadece update ve delete işlemlerini sıkılaştırıyoruz.
       allow read: if true; 
       allow update: if isAuthorizedWrite();
       allow delete: if isAuthorizedDelete();
@@ -64,6 +58,13 @@ service cloud.firestore {
                     && request.resource.data.message != null;
       allow read: if true;
       allow update: if isAuthorizedWrite();
+      allow delete: if isAuthorizedDelete();
+    }
+
+    // 6. Yasal kurallar: Herkes okuyabilir, sadece şifreyi bilen admin yazabilir/silebilir
+    match /legal/{document} {
+      allow read: if true;
+      allow create, update: if isAuthorizedWrite();
       allow delete: if isAuthorizedDelete();
     }
   }
