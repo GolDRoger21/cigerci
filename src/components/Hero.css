@@ -17,7 +17,27 @@
   height: 100%;
   z-index: 1;
   overflow: hidden;
-  background: #000;
+  background: #090807;
+}
+
+/* Sharp Poster Background shown during load to hide YouTube initialization */
+.hero-poster-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/resimler/hero_ocakbasi.png');
+  background-size: cover;
+  background-position: center;
+  z-index: 2; /* Sits on top of the iframe but below the overlay */
+  transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 1;
+}
+
+.hero-poster-image.fade-out {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 🎥 GENIUS 9:16 YOUTUBE SHORTS FULL SCREEN BACKGROUND COVER SYSTEM */
@@ -34,7 +54,13 @@
   min-width: 56.25vh; /* 9:16 Aspect Ratio (100 * 9 / 16) */
   pointer-events: none;
   border: none;
-  opacity: 0.90; /* High opacity for vibrant, visible video colors */
+  opacity: 0; /* Starts fully hidden to conceal initialization / play buttons */
+  transition: opacity 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.video-bg-iframe.fade-in {
+  opacity: 0.90; /* Smooth fade-in to vibrant visible state once playing */
 }
 
 /* Maintain cover layout for screen aspect ratio shifts */

@@ -6,6 +6,7 @@ import "./Hero.css";
 
 export default function Hero() {
   const [heroVideoId, setHeroVideoId] = useState("Hzq_6lFJZUI");
+  const [videoActive, setVideoActive] = useState(false);
 
   // Fetch dynamic video setting from Firestore config
   useEffect(() => {
@@ -26,6 +27,15 @@ export default function Hero() {
     fetchVideoSetting();
   }, []);
 
+  // Delay fading in the iframe to completely hide initial YouTube player buttons and loading states
+  useEffect(() => {
+    setVideoActive(false);
+    const timer = setTimeout(() => {
+      setVideoActive(true);
+    }, 1800); // 1.8 seconds is the sweet spot for YouTube to autoplay muted in the background
+    return () => clearTimeout(timer);
+  }, [heroVideoId]);
+
   const handleScrollTo = (e, id) => {
     e.preventDefault();
     const element = document.getElementById(id);
@@ -45,10 +55,13 @@ export default function Hero() {
 
   return (
     <section id="hero" className="hero-section">
-      {/* Autoplay & Loop YouTube Background Video */}
+      {/* Autoplay & Loop YouTube Background Video with Smooth Fade-in */}
       <div className="video-background-container">
+        {/* Sharp Static Poster shown during load */}
+        <div className={`hero-poster-image ${videoActive ? "fade-out" : ""}`}></div>
+        
         <iframe
-          className="video-bg-iframe"
+          className={`video-bg-iframe ${videoActive ? "fade-in" : ""}`}
           src={`https://www.youtube.com/embed/${heroVideoId}?autoplay=1&mute=1&loop=1&playlist=${heroVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`}
           frameBorder="0"
           allow="autoplay; encrypted-media"
