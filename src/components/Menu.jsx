@@ -93,12 +93,27 @@ export default function Menu() {
                   </span>
                 )}
                 
+                {/* Yemek Görseli */}
+                {item.imageUrl && (
+                  <div className="menu-card-image-wrapper">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      className="menu-card-image"
+                      onError={(e) => {
+                        e.target.src = "/resimler/sur_basalt_texture.png";
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="menu-card-header">
                   <h3 className="menu-item-name">{item.name}</h3>
                   <span className="menu-item-price gold-text">
                     {item.price > 0 ? `${item.price} ₺` : "İkram"}
                   </span>
                 </div>
+
 
                 <div className="menu-item-divider"></div>
 

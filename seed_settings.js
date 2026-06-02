@@ -60,14 +60,24 @@ async function seedSettings() {
         imageUrl = "/resimler/hero_ocakbasi.png";
       } else if (doc.id === "tavuk-sis") {
         imageUrl = "/resimler/Gemini_Generated_Image_9s8ok99s8ok99s8o.png";
+      } else if (doc.id === "bostana-salata") {
+        imageUrl = "/resimler/bostana_salata.png";
+      } else if (doc.id === "ezme-salata") {
+        imageUrl = "/resimler/acili_ezme.png";
+      } else if (doc.id === "sumakli-sogan") {
+        imageUrl = "/resimler/sumakli_sogan.png";
       } else if (doc.id === "burma-kadayif") {
         imageUrl = "/resimler/Gemini_Generated_Image_zdwcezdwcezdwcez.png";
       } else if (doc.id === "kunefe") {
         imageUrl = "/resimler/Gemini_Generated_Image_6715f16715f16715.png";
+      } else if (doc.id === "yayik-ayrani") {
+        imageUrl = "/resimler/yayik_ayrani.png";
+      } else if (doc.id === "mirra") {
+        imageUrl = "/resimler/mirra_kahvesi.png";
       } else {
-        // Fallback for drinks and mezze
         imageUrl = "/resimler/sur_basalt_texture.png";
       }
+
       
       await menuColl.doc(doc.id).update({
         imageUrl: imageUrl,
