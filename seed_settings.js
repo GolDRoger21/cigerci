@@ -53,7 +53,7 @@ async function seedSettings() {
       if (doc.id === "ciger-sis") {
         imageUrl = "/resimler/ciger_plating.png";
       } else if (doc.id === "yaprak-ciger") {
-        imageUrl = "/resimler/Gemini_Generated_Image_4bnjhd4bnjhd4bnj.png";
+        imageUrl = "/resimler/yaprak_ciger.png";
       } else if (doc.id === "diyarbakir-kebap") {
         imageUrl = "/resimler/Gemini_Generated_Image_pmvftppmvftppmvf.png";
       } else if (doc.id === "kuzu-sis") {
@@ -67,12 +67,13 @@ async function seedSettings() {
       } else if (doc.id === "sumakli-sogan") {
         imageUrl = "/resimler/sumakli_sogan.png";
       } else if (doc.id === "burma-kadayif") {
-        imageUrl = "/resimler/Gemini_Generated_Image_zdwcezdwcezdwcez.png";
+        imageUrl = "/resimler/burma_kadayif.png";
       } else if (doc.id === "kunefe") {
-        imageUrl = "/resimler/Gemini_Generated_Image_6715f16715f16715.png";
+        imageUrl = "/resimler/kunefe.png";
       } else if (doc.id === "yayik-ayrani") {
         imageUrl = "/resimler/yayik_ayrani.png";
       } else if (doc.id === "mirra") {
+
         imageUrl = "/resimler/mirra_kahvesi.png";
       } else {
         imageUrl = "/resimler/sur_basalt_texture.png";

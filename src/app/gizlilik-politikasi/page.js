@@ -1,28 +1,52 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import Navbar from "../../components/Navbar";
 
-export const metadata = {
-  title: "Gizlilik Politikası | Ciğerci Neşet",
-  description: "Ciğerci Neşet web sitesi Gizlilik Politikası ve veri güvenliği koşulları."
-};
-
-export default async function PrivacyPolicyPage() {
-  let docData = {
+export default function PrivacyPolicyPage() {
+  const [docData, setDocData] = useState({
     title: "Gizlilik Politikası",
-    content: "Yükleniyor..."
-  };
+    content: ""
+  });
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const docRef = doc(db, "legal", "privacy_policy");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      docData = docSnap.data();
-    }
-  } catch (err) {
-    console.error("Gizlilik politikası yüklenemedi:", err);
-  }
+  const fallbackContent = `Ciğerci Neşet olarak, web sitemizi ziyaret eden misafirlerimizin kişisel verilerinin korunmasına ve gizliliğine son derece önem veriyoruz. Bu Gizlilik Politikası, sitemiz üzerinden toplanan bilgilerin nasıl kullanıldığını ve korunduğunu açıklamaktadır.
+
+1. Toplanan Veriler:
+Web sitemiz üzerinden masa rezervasyonu yaptığınızda veya iletişim formunu doldurduğunuzda; adınız soyadınız, telefon numaranız, e-posta adresiniz ve rezervasyon notlarınız gibi bilgiler toplanmaktadır.
+
+2. Verilerin Kullanım Amacı:
+Toplanan kişisel verileriniz, sadece masa rezervasyonunuzun doğrulanması, taleplerinizin yanıtlanması ve sizlere daha iyi bir ocakbaşı hizmeti sunulabilmesi amacıyla kullanılmaktadır. Bilgileriniz kesinlikle üçüncü şahıslarla paylaşılmaz veya ticari amaçla satılmaz.
+
+3. Güvenlik:
+Verileriniz güvenli Google Cloud ve Firebase sunucularında depolanmakta olup, yetkisiz erişimleri engellemek için gerekli tüm teknik ve idari güvenlik önlemleri alınmıştır.`;
+
+  useEffect(() => {
+    const fetchDoc = async () => {
+      try {
+        const docRef = doc(db, "legal", "privacy_policy");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setDocData(docSnap.data());
+        } else {
+          setDocData({
+            title: "Gizlilik Politikası",
+            content: fallbackContent
+          });
+        }
+      } catch (err) {
+        console.error("Gizlilik politikası yüklenemedi, yerel metin yükleniyor:", err);
+        setDocData({
+          title: "Gizlilik Politikası",
+          content: fallbackContent
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchDoc();
+  }, []);
 
   return (
     <>
@@ -36,16 +60,23 @@ export default async function PrivacyPolicyPage() {
             </h1>
             <div style={{ width: "60px", height: "2.5px", background: "var(--color-primary)", boxShadow: "0 0 8px var(--color-primary)", marginBottom: "2.5rem" }}></div>
             
-            <div className="legal-paragraphs-wrapper" style={{ textIndent: "0" }}>
-              {docData.content.split("\n").map((paragraph, index) => {
-                if (!paragraph.trim()) return null;
-                return (
-                  <p key={index} style={{ color: "var(--color-text-muted)", fontSize: "1.05rem", lineHeight: "1.8", marginBottom: "1.5rem", textAlign: "justify" }}>
-                    {paragraph}
-                  </p>
-                );
-              })}
-            </div>
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "3rem" }}>
+                <div className="menu-spinner" style={{ margin: "0 auto 1.5rem auto" }}></div>
+                <p className="gold-text">Yasal metin yükleniyor...</p>
+              </div>
+            ) : (
+              <div className="legal-paragraphs-wrapper" style={{ textIndent: "0" }}>
+                {docData.content.split("\n").map((paragraph, index) => {
+                  if (!paragraph.trim()) return null;
+                  return (
+                    <p key={index} style={{ color: "var(--color-text-muted)", fontSize: "1.05rem", lineHeight: "1.8", marginBottom: "1.5rem", textAlign: "justify" }}>
+                      {paragraph}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
 
             <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <a href="/" style={{ color: "var(--color-primary)", textDecoration: "none", fontSize: "0.9rem", fontWeight: "600" }}>← Sitede Gezinmeye Dön</a>

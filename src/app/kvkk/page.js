@@ -1,28 +1,54 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import Navbar from "../../components/Navbar";
 
-export const metadata = {
-  title: "KVKK Aydınlatma Metni | Ciğerci Neşet",
-  description: "Ciğerci Neşet web sitesi KVKK Aydınlatma Metni ve veri işleme ilkeleri."
-};
-
-export default async function KvkkPage() {
-  let docData = {
+export default function KvkkPage() {
+  const [docData, setDocData] = useState({
     title: "KVKK Aydınlatma Metni",
-    content: "Yükleniyor..."
-  };
+    content: ""
+  });
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const docRef = doc(db, "legal", "kvkk");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      docData = docSnap.data();
-    }
-  } catch (err) {
-    console.error("KVKK yüklenemedi:", err);
-  }
+  const fallbackContent = `Kişisel Verilerin Korunması Kanunu (KVKK) Aydınlatma Metni
+
+Ciğerci Neşet olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında, veri sorumlusu sıfatıyla siz değerli misafirlerimizin kişisel verilerini yasal sınırlar dahilinde işlemekteyiz.
+
+1. Kişisel Verilerin İşlenme Amacı:
+Masa rezervasyonu taleplerinin alınması, müşteri memnuniyeti değerlendirmelerinin takibi, şikayet ve önerilerinizin yanıtlanması amacıyla kişisel verileriniz işlenmektedir.
+
+2. İşlenen Verileriniz ve Aktarımı:
+Ad, soyad, telefon ve e-posta verileriniz kanuni yükümlülükler haricinde üçüncü parti kurum veya şahıslara aktarılmamakta, sadece restoran bünyesindeki yönetim sisteminde saklanmaktadır.
+
+3. Haklarınız:
+Kanun kapsamında kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, eksik veya yanlış işlenmişse düzeltilmesini isteme haklarına sahipsiniz. Taleplerinizi info@cigercineset.com adresine iletebilirsiniz.`;
+
+  useEffect(() => {
+    const fetchDoc = async () => {
+      try {
+        const docRef = doc(db, "legal", "kvkk");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setDocData(docSnap.data());
+        } else {
+          setDocData({
+            title: "KVKK Aydınlatma Metni",
+            content: fallbackContent
+          });
+        }
+      } catch (err) {
+        console.error("KVKK yüklenemedi, yerel metin yükleniyor:", err);
+        setDocData({
+          title: "KVKK Aydınlatma Metni",
+          content: fallbackContent
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchDoc();
+  }, []);
 
   return (
     <>
@@ -36,16 +62,23 @@ export default async function KvkkPage() {
             </h1>
             <div style={{ width: "60px", height: "2.5px", background: "var(--color-primary)", boxShadow: "0 0 8px var(--color-primary)", marginBottom: "2.5rem" }}></div>
             
-            <div className="legal-paragraphs-wrapper" style={{ textIndent: "0" }}>
-              {docData.content.split("\n").map((paragraph, index) => {
-                if (!paragraph.trim()) return null;
-                return (
-                  <p key={index} style={{ color: "var(--color-text-muted)", fontSize: "1.05rem", lineHeight: "1.8", marginBottom: "1.5rem", textAlign: "justify" }}>
-                    {paragraph}
-                  </p>
-                );
-              })}
-            </div>
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "3rem" }}>
+                <div className="menu-spinner" style={{ margin: "0 auto 1.5rem auto" }}></div>
+                <p className="gold-text">Yasal metin yükleniyor...</p>
+              </div>
+            ) : (
+              <div className="legal-paragraphs-wrapper" style={{ textIndent: "0" }}>
+                {docData.content.split("\n").map((paragraph, index) => {
+                  if (!paragraph.trim()) return null;
+                  return (
+                    <p key={index} style={{ color: "var(--color-text-muted)", fontSize: "1.05rem", lineHeight: "1.8", marginBottom: "1.5rem", textAlign: "justify" }}>
+                      {paragraph}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
 
             <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <a href="/" style={{ color: "var(--color-primary)", textDecoration: "none", fontSize: "0.9rem", fontWeight: "600" }}>← Sitede Gezinmeye Dön</a>
